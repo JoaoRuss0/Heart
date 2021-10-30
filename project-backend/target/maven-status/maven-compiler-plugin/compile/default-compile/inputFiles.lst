@@ -1,3 +1,7 @@
-O:\Classes\DAE\Practical\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\HelloResource.java
-O:\Classes\DAE\Practical\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\ejbs\ConfigBean.java
-O:\Classes\DAE\Practical\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\HelloApplication.java
+O:\Classes\DAE\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\ejbs\DoenteBean.java
+O:\Classes\DAE\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\ws\DoenteService.java
+O:\Classes\DAE\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\ejbs\ConfigBean.java
+O:\Classes\DAE\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\entities\Doente.java
+O:\Classes\DAE\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\entities\User.java
+O:\Classes\DAE\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\dtos\DoenteDTO.java
+O:\Classes\DAE\Project\project-backend\src\main\java\pt\ipleiria\estg\dei\ei\dae\project\ProjectApplication.java

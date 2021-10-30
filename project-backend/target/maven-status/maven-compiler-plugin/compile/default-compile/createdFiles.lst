@@ -1,3 +1,7 @@
-pt\ipleiria\estg\dei\ei\dae\project\HelloApplication.class
-pt\ipleiria\estg\dei\ei\dae\project\HelloResource.class
+pt\ipleiria\estg\dei\ei\dae\project\ProjectApplication.class
+pt\ipleiria\estg\dei\ei\dae\project\entities\Doente.class
+pt\ipleiria\estg\dei\ei\dae\project\ejbs\DoenteBean.class
+pt\ipleiria\estg\dei\ei\dae\project\entities\User.class
 pt\ipleiria\estg\dei\ei\dae\project\ejbs\ConfigBean.class
+pt\ipleiria\estg\dei\ei\dae\project\dtos\DoenteDTO.class
+pt\ipleiria\estg\dei\ei\dae\project\ws\DoenteService.class
