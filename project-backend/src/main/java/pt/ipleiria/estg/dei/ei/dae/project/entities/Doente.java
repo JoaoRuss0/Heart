@@ -23,7 +23,6 @@ public class Doente extends User{
     private double altura;
 
     public Doente() {
-
     }
 
     public Doente(String name, String email, String password, int idade, double peso, double altura) {

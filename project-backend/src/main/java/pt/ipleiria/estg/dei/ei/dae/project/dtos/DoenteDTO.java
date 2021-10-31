@@ -1,17 +1,14 @@
 package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
-public class DoenteDTO {
+import java.io.Serializable;
+
+public class DoenteDTO implements Serializable {
 
     private String name;
-
     private String email;
-
     private String password;
-
     private int idade;
-
     private double peso;
-
     private double altura;
 
     public DoenteDTO() {

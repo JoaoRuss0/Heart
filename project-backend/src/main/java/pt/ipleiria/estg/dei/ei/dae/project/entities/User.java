@@ -7,8 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @MappedSuperclass
-@Table(name = "USERS")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User implements Serializable {
 
     @Id
