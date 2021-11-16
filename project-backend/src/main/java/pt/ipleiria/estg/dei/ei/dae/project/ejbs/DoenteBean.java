@@ -14,7 +14,6 @@ public class DoenteBean {
     EntityManager entityManager;
 
     public Doente create(String name, String email, String password, int idade, double peso, double altura) throws Exception {
-
         Doente doente = find(email);
 
         if(doente != null) {

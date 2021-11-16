@@ -3,7 +3,7 @@
         <h1>
             Create new dado biomedico
         </h1>
-        <b-form @submit.prevent="create" :disabled="!isFormValid">
+        <b-form @submit.prevent="onSubmit" :disabled="!isFormValid">
             <b-form-group
                 id="inputNameGroup"
                 label="Name:"
@@ -142,7 +142,7 @@ export default {
         }
     },
     methods: {
-        create(event) {
+        onSubmit(event) {
             this.$axios.$post('api/dadosbiomedicos/', this.dadoBiomedico)
             .then(() => {
                 this.$router.push("/doentes")

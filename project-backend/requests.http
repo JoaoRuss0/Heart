@@ -1,0 +1,14 @@
+### Get JWT token
+
+POST http://localhost:8080/project/api/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=r.r@r.r&password=1234
+
+###
+
+GET http://localhost:8080/project/api/auth/user
+Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyLnJAci5yIiwiaXNzIjoicXVpY2tzdGFydC1qd3QtaXNzdWVyIiwiYXVkIjoiand0LWF1ZGllbmNlIiwiZ3JvdXBzIjpbIkRvZW50ZSJdLCJleHAiOjE2MzcwMTQ3MzR9.B7VAWMM08coVb304rh-0GzJGk2yA1WgOr_Ywh6Djn0dlRRT2ZMmJ__KKrPevAzXEZRhmXrgFGBljqt5Q3_-K3BxY3KEixWcbfZ7GE1-E_XQP0w-BlvpDX1ggjIbKv6Vs7epO5Insl4EvhQdGqdDmczpsOZd0e5XSc1Sh4nuoTcMcIl3Hpa8nDq-OyE6gyQhs-5ml_WGuQdxYMzkHoMGgjGix4sHORlbzLfSzCo2ZaCVPKij9sN_etnnE-TTccTSelMLU4-oIJmy-TjM4CQ72222MF_eshZI0COV-vRLvUcAvhSk0OkZuo3lreNFRwrgRO1xNtFwGuy0_ZQ4ptsUm0Q
+
+###

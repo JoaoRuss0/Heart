@@ -16,7 +16,6 @@ public class AdministradorBean {
     EntityManager entityManager;
 
     public Administrador create(String name, String email, String password) throws Exception {
-
         Administrador administrador = find(email);
 
         if(administrador != null) {
