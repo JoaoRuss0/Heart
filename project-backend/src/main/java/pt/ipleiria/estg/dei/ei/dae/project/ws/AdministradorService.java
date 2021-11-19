@@ -29,8 +29,8 @@ public class AdministradorService {
         return Response.ok(toDTOs(administradorBean.getAll())).build();
     }
 
-    private List<UserDTO> toDTOs(List<Administrador> doentes) {
-        return doentes.stream().map(this::toDTO).collect(Collectors.toList());
+    private List<UserDTO> toDTOs(List<Administrador> administradores) {
+        return administradores.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     private UserDTO toDTO(Administrador administrador) {

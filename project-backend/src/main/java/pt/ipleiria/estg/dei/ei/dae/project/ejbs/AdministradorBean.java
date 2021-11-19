@@ -1,7 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,7 +18,7 @@ public class AdministradorBean {
         Administrador administrador = find(email);
 
         if(administrador != null) {
-            throw new Exception("Found doente with email = '" + email + "'.");
+            throw new Exception("Found administrador with email = '" + email + "'.");
         }
 
         administrador = new Administrador(name, email, password);
@@ -33,13 +32,13 @@ public class AdministradorBean {
     }
 
     private Administrador findOrFail(String email){
-        Administrador doente = find(email);
+        Administrador administrador = find(email);
 
-        if(doente == null){
+        if(administrador == null){
             throw new NotFoundException("Administrador with email = '" + email + "' not found.");
         }
 
-        return doente;
+        return administrador;
     }
 
     private Administrador find(String email) {
