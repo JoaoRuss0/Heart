@@ -1,11 +1,12 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.NotFoundException;
 import java.util.List;
 
 @Stateless
@@ -14,8 +15,27 @@ public class UserBean {
     @PersistenceContext
     EntityManager entityManager;
 
+    @EJB
+    AdministradorBean administradorBean;
+
+
     public List<User> getAll() {
         return entityManager.createNamedQuery("getAllUsers", User.class).getResultList();
+    }
+
+    public User create(String email, String name, String password, String tipo) throws Exception {
+        User user = null;
+        System.out.println(tipo);
+
+        if(tipo == "Administrador") {
+            user = administradorBean.create(email, name, password);
+        } else if( tipo.equals("ProfissionalDeSaude")) {
+
+        } else {
+            throw new Exception("Type of user does not match any creatable user types.");
+        }
+
+        return user;
     }
 
     public User authenticate(final String email, final String password) throws Exception {
@@ -26,5 +46,19 @@ public class UserBean {
         }
 
         throw new Exception("Failed logging in with email '" + email + "': unknown email or wrong password");
+    }
+
+    public User findOrFail(String email) {
+        User user = find(email);
+
+        if(user == null) {
+            throw new NotFoundException("User with email='" + email +"' was not found.");
+        }
+
+        return user;
+    }
+
+    public User find(String email) {
+        return entityManager.find(User.class, email);
     }
 }

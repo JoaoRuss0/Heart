@@ -1,0 +1,19 @@
+POST http://localhost:8080/project/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "a.a@a.a",
+  "password": "1234"
+}
+
+###
+POST http://localhost:8080/project/api/users
+Authorization: Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhLmFAYS5hIiwiaXNzIjoicXVpY2tzdGFydC1qd3QtaXNzdWVyIiwiYXVkIjoiand0LWF1ZGllbmNlIiwiZ3JvdXBzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNjM3ODU5ODg0fQ.GmRI6-iWqKVxHHSUxy74R_YRNm2ZqCgi8FpD-xe1SoErVjbgmbwNbaQP3rGsxoHAd5nty_GCF6qsgxCKNyIbKwOMYvCT0ig3Jrys2Y-WEAikbtNBTk_OFl5sevedCyB8Nk8Ayr2OYUT-Na41T4kSIbeAXtM84AmdaZZyBhc-UPWh1w-T6VcssRRLFVrINxhrNjT0i5ux37haH4XMzGT5wpa3ZcLLxeUykd9P0mBl66dzLZfxxf2IltQo-3weZQ1LGVAlVDNixhAW6CXq913-ajteJzyCIEx3mQEgWn4caNtAfBpyxoCK-HCQ8IAe6huPqbx96N1gTXJWZ03CTgjz_g
+Content-Type: application/json
+
+{
+  "tipo": "Administrador",
+  "email": "b.b@b.b",
+  "name": "b",
+  "password": "1234"
+}

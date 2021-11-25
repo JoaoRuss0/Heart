@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ws;
 
+import pt.ipleiria.estg.dei.ei.dae.project.dtos.AdministradorDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.UserDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.AdministradorBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
@@ -15,8 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("administradores")
-@Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_JSON})
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class AdministradorService {
 
     @EJB
@@ -29,15 +30,14 @@ public class AdministradorService {
         return Response.ok(toDTOs(administradorBean.getAll())).build();
     }
 
-    private List<UserDTO> toDTOs(List<Administrador> administradores) {
+    private List<AdministradorDTO> toDTOs(List<Administrador> administradores) {
         return administradores.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    private UserDTO toDTO(Administrador administrador) {
-        return new UserDTO(
+    private AdministradorDTO toDTO(Administrador administrador) {
+        return new AdministradorDTO(
                 administrador.getName(),
-                administrador.getEmail(),
-                administrador.getPassword()
+                administrador.getEmail()
         );
     }
 }

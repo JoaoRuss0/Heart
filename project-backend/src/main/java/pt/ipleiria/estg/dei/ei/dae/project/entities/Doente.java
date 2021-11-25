@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.project.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "DOENTES")
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
             query = "SELECT d FROM Doente d ORDER BY d.name"
         )
 })
-public class Doente extends User{
+public class Doente extends User {
 
     @NotNull
     private int idade;

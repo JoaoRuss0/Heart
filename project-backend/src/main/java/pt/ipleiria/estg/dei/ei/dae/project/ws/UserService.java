@@ -1,25 +1,48 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ws;
 
+import jdk.jfr.internal.Logger;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.UserDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.UserBean;
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("users")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserService {
 
     @EJB
-    UserBean userBean;
+    private UserBean userBean;
 
+    @GET
     @Path("/")
     public Response getAll() {
         return Response.ok(toDTOs(userBean.getAll())).build();
+    }
+
+    @POST
+    @Path("/")
+    public Response create(UserDTO userDTO) throws Exception {
+        User user = userBean.find(userDTO.getEmail());
+
+        if(user != null) {
+            throw new Exception("Found user with email='" + userDTO.getEmail() + "'");
+        }
+
+        user = userBean.create(
+                userDTO.getEmail(),
+                userDTO.getName(),
+                userDTO.getPassword(),
+                userDTO.getTipo()
+        );
+
+        return Response.ok(toDTO(user)).build();
     }
 
     private List<UserDTO> toDTOs(List<User> users) {

@@ -13,11 +13,11 @@
             <http-method>GET</http-method>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>Administrator</role-name>
+            <role-name>Administrador</role-name>
         </auth-constraint>
     </security-constraint>
     <security-role>
-        <role-name>Administrator</role-name>
+        <role-name>Administrador</role-name>
     </security-role>
     <security-role>
         <role-name>Doente</role-name>
