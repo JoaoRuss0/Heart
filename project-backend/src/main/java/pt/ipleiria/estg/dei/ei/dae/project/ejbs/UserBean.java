@@ -18,7 +18,6 @@ public class UserBean {
     @EJB
     AdministradorBean administradorBean;
 
-
     public List<User> getAll() {
         return entityManager.createNamedQuery("getAllUsers", User.class).getResultList();
     }

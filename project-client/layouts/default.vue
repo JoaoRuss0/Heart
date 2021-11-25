@@ -1,12 +1,12 @@
 <template>
     <div id="app">
         <b-navbar toggleable="lg">
-            <b-navbar-brand href="#">Heart</b-navbar-brand>
+            <b-navbar-brand href="/">Heart</b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     <li class="nav-item">
-                        <nuxt-link class="nav-link" to="">Something</nuxt-link>
+                        <nuxt-link class="nav-link" to="/users">Users</nuxt-link>
                     </li>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
@@ -24,6 +24,13 @@
         </b-navbar>
         <main>
             <Nuxt/>
+            <b-container class="mt-1">
+                <div class="text-right">
+                    <b-button class="px-4" @click="$router.back()">
+                        <b-icon-arrow-left></b-icon-arrow-left>
+                    </b-button>
+                </div>
+            </b-container>
         </main>
     </div>
 </template>

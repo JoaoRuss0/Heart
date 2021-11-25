@@ -1,8 +1,11 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ws;
 
-import jdk.jfr.internal.Logger;
+import pt.ipleiria.estg.dei.ei.dae.project.dtos.AdministradorDTO;
+import pt.ipleiria.estg.dei.ei.dae.project.dtos.DoenteDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.UserDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.UserBean;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
 
 import javax.ejb.EJB;
@@ -24,6 +27,24 @@ public class UserService {
     @Path("/")
     public Response getAll() {
         return Response.ok(toDTOs(userBean.getAll())).build();
+    }
+
+    @GET
+    @Path("/{email}")
+    public Response get(@PathParam("email") String email) {
+        User user = userBean.findOrFail(email);
+
+        if(user instanceof Administrador) {
+            Administrador administrador = (Administrador) user;
+
+            return Response.ok(new AdministradorDTO(administrador.getName(), administrador.getEmail())).build();
+        } else if(user instanceof Doente) {
+            Doente doente = (Doente) user;
+
+            return Response.ok(new DoenteDTO(doente.getName(), doente.getEmail(), doente.getIdade(), doente.getPeso(), doente.getAltura())).build();
+        }
+
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     @POST
@@ -52,7 +73,8 @@ public class UserService {
     private UserDTO toDTO(User user) {
         return new UserDTO(
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getClass().getSimpleName()
         );
     }
 }

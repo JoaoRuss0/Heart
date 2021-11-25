@@ -37,7 +37,6 @@ public class DoenteService {
         return new DoenteDTO(
                 doente.getName(),
                 doente.getEmail(),
-                doente.getPassword(),
                 doente.getIdade(),
                 doente.getPeso(),
                 doente.getAltura()
