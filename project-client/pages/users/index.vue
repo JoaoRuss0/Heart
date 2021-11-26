@@ -17,7 +17,7 @@
                 :busy="usersLoaded"
             >
                 <template #table-busy>
-                    <Spinner/>
+                    <spinner />
                 </template>
             </b-table>
         </b-row>
@@ -36,13 +36,15 @@
 </template>
 
 <script>
+import Spinner from "../../components/Spinner";
 export default {
+    components: {Spinner},
     data() {
         return {
             users: null,
             usersLoaded: true,
             selectedRow: [],
-            fields: [{key: "name", sortable: true}, {key: "email", sortable: true}]
+            fields: [{key: "tipo", label: "Type", sortable: true}, {key: "name", sortable: true}, {key: "email", sortable: true}]
         }
     },
     created() {

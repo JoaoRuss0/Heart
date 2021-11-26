@@ -7,13 +7,15 @@
             </b-form-group>
         </template>
         <template v-else>
-            <Spinner />
+            <spinner />
         </template>
     </b-container>
 </template>
 
 <script>
+import Spinner from "../../../components/Spinner";
 export default {
+    components: {Spinner},
     data() {
         return {
             user: null

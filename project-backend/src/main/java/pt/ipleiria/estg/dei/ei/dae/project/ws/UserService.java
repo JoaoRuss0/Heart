@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.project.ws;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.AdministradorDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.DoenteDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.UserDTO;
+import pt.ipleiria.estg.dei.ei.dae.project.ejbs.AdministradorBean;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.UserBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
@@ -45,25 +46,6 @@ public class UserService {
         }
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-    }
-
-    @POST
-    @Path("/")
-    public Response create(UserDTO userDTO) throws Exception {
-        User user = userBean.find(userDTO.getEmail());
-
-        if(user != null) {
-            throw new Exception("Found user with email='" + userDTO.getEmail() + "'");
-        }
-
-        user = userBean.create(
-                userDTO.getEmail(),
-                userDTO.getName(),
-                userDTO.getPassword(),
-                userDTO.getTipo()
-        );
-
-        return Response.ok(toDTO(user)).build();
     }
 
     private List<UserDTO> toDTOs(List<User> users) {

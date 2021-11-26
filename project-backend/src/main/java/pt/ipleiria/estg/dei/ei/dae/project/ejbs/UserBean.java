@@ -22,21 +22,6 @@ public class UserBean {
         return entityManager.createNamedQuery("getAllUsers", User.class).getResultList();
     }
 
-    public User create(String email, String name, String password, String tipo) throws Exception {
-        User user = null;
-        System.out.println(tipo);
-
-        if(tipo == "Administrador") {
-            user = administradorBean.create(email, name, password);
-        } else if( tipo.equals("ProfissionalDeSaude")) {
-
-        } else {
-            throw new Exception("Type of user does not match any creatable user types.");
-        }
-
-        return user;
-    }
-
     public User authenticate(final String email, final String password) throws Exception {
         User user = entityManager.find(User.class, email);
 
