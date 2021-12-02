@@ -40,7 +40,8 @@ public class DoenteBean {
         return doente;
     }
 
-    private Doente find(String email) {
+    public Doente find(String email) {
         return entityManager.find(Doente.class, email);
     }
 }
+

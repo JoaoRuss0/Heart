@@ -33,13 +33,13 @@ public class AdministradorBean {
     }
 
     private Administrador findOrFail(String email){
-        Administrador doente = find(email);
+        Administrador administrador = find(email);
 
-        if(doente == null){
+        if(administrador == null){
             throw new NotFoundException("Administrador with email = '" + email + "' not found.");
         }
 
-        return doente;
+        return administrador;
     }
 
     private Administrador find(String email) {

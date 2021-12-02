@@ -6,9 +6,15 @@ import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.GenerationType;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.NotFoundException;
-import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @Stateless
@@ -20,8 +26,7 @@ public class PrescricaoBean {
     @EJB
     DoenteBean doenteBean;
 
-    public Prescricao create(String causa, String doenteEmail) throws Exception {
-
+    public Prescricao create(String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) throws Exception {
         Doente doente = doenteBean.find(doenteEmail);
 
         if(doente == null){
@@ -29,8 +34,8 @@ public class PrescricaoBean {
         }
 
 
+        Prescricao prescricao = new Prescricao(causa, stringToGregorian(dataInicio), stringToGregorian(dataFinal), tipoPrescricao, doente);
 
-        Prescricao prescricao = new Prescricao(causa, doente);
         doente.adicionarPrescricao(prescricao);
         entityManager.persist(prescricao);
 
@@ -51,8 +56,32 @@ public class PrescricaoBean {
         return id;
     }
 
-    private Prescricao find(int id) {
+    public Prescricao find(int id) {
         return entityManager.find(Prescricao.class, id);
+    }
+
+
+    public Prescricao updatePrescricao(Prescricao prescricao, String causa) {
+        prescricao.setCausa(causa);
+        entityManager.merge(causa);
+        return prescricao;
+    }
+
+    public void deletePrescricao(int id) throws Exception {
+        Prescricao prescricao = this.find(id);
+
+        if(prescricao == null) {
+            throw new NotFoundException("Prescricao with code " + id + " does not exist!");
+        }
+        entityManager.remove(prescricao);
+    }
+
+    private GregorianCalendar stringToGregorian(String data) throws ParseException {
+        DateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+        Date date = df.parse(data);
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        return (GregorianCalendar) cal;
     }
 
 }

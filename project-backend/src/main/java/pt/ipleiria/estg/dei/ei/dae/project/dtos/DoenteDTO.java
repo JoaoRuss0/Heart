@@ -1,6 +1,10 @@
 package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DoenteDTO implements Serializable {
 
@@ -10,18 +14,19 @@ public class DoenteDTO implements Serializable {
     private int idade;
     private double peso;
     private double altura;
-
+    private List<PrescricaoDTO> prescricoes;
     public DoenteDTO() {
+        prescricoes = new ArrayList<>();
 
     }
-
-    public DoenteDTO(String name, String email, String password, int idade, double peso, double altura) {
+    public DoenteDTO(String name, String email, String password, int idade, double peso, double altura, List<PrescricaoDTO> prescricoes) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.idade = idade;
         this.peso = peso;
         this.altura = altura;
+        this.prescricoes=prescricoes;
     }
 
     /*Getters*/
@@ -44,6 +49,12 @@ public class DoenteDTO implements Serializable {
         return altura;
     }
 
+    public List<PrescricaoDTO> getPrescricoes() {
+        return prescricoes;
+    }
+
+
+
     /*Setters*/
     public void setName(String name) {
         this.name = name;
@@ -62,5 +73,9 @@ public class DoenteDTO implements Serializable {
     }
     public void setAltura(double altura) {
         this.altura = altura;
+    }
+
+    public void setPrescricoes(List<PrescricaoDTO> prescricoes) {
+        this.prescricoes = prescricoes;
     }
 }

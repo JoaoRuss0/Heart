@@ -1,12 +1,20 @@
 <template>
-    <b-container>
-        <b-jumbotron header="Welcome to Heart!" lead="The best in healthcare.">
-            <hr class="my-4">
-            <p>For more information visit website</p>
-        </b-jumbotron>
-    </b-container>
+
+    <div>
+
+
+        <b-img src="https://img.vixdata.io/pd/webp-large/pt/sites/default/files/bdm/field/image/coracao-medico.jpg"
+               fluid-grow alt="Fluid-grow image"></b-img>
+
+
+    </div>
+
+
 </template>
 
 <script>
-
+export default {
+    middleware: 'auth',
+    auth: 'guest'
+}
 </script>

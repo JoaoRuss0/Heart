@@ -1,41 +1,58 @@
 <template>
     <b-container>
         <h3>Passar Prescrição</h3>
-        <b-form @submit.prevent="onSubmit" @reset.prevent="onReset" :disabled="!isFormValid">
+        <b-form @submit.prevent="create" @reset.prevent="onReset" :disabled="!isFormValid">
+            <label>Seleciona o Tipo de Prescrição:</label>
+            <select v-model="prescricao.tipoPrescricao" id="tipoPrescricao" name="tipoPrescricao">
+                <option value="prescricaoExercicioFisico">Prescrição Exercicio Fisico</option>
+                <option value="prescricaoMedica">Prescrição Médica</option>
+                <option value="prescricaoNutricao">Prescrição Nutrição</option>
+            </select>
+
             <b-form-group
-                id="inputEmailGroup"
+                id="inputCausaGroup"
                 label="Causa"
                 label-for="inputCausa"
+                :invalid-feedback="invalidFeedbackCausa"
+                :state="stateCausa"
+            >
+                <b-input
+                    id="inputCausa"
+                    ref="causa"
+                    name="causa"
+                    placeholder="A causa da prescrição"
+                    v-model.trim="prescricao.causa"
+                    :state="stateCausa"
+                    required/>
+            </b-form-group>
+            <b-form-group
+                id="inputEmail"
+                label="Email do Doente:"
+                label-for="inputEmail"
                 :invalid-feedback="invalidFeedbackEmail"
                 :state="stateEmail"
             >
                 <b-input
-                    id="inputCausa"
-                    ref="email"
-                    name="email"
-                    type="email"
-                    placeholder="A causa da prescrição"
-                    v-model.trim="email"
-                    :state="stateEmail"
-                    required/>
-            </b-form-group>
-            <b-form-group
-                id="inputPasswordGroup"
-                label="Email do Doente:"
-                label-for="inputPassword"
-                :invalid-feedback="invalidFeedbackPassword"
-                :state="statePassword"
-            >
-                <b-input
                     id="inputEmail"
                     name="email"
+                    ref="email"
                     type="email"
                     placeholder="example:bomdiaxau@gmail.com"
-                    v-model="email"
+                    v-model="prescricao.doenteEmail"
                     :state="stateEmail"
                     required/>
             </b-form-group>
-            <b-button type="reset" class="btn-warning">Back</b-button>
+            <div>
+                <label >Data Inicio</label>
+                <b-form-datepicker id="dataInicial" v-model="prescricao.dataInicio" class="mb-2"></b-form-datepicker>
+
+            </div>
+            <div>
+                <label >Data Final</label>
+                <b-form-datepicker id="dataFinal" v-model="prescricao.dataFinal" class="mb-2"></b-form-datepicker>
+
+            </div>
+
             <b-button type="submit" class="btn-success">Create</b-button>
         </b-form>
     </b-container>
@@ -46,8 +63,14 @@ export default {
     auth: false,
     data() {
         return {
+         prescricao:
+        {
             causa: null,
-            password: null
+            doenteEmail: null,
+            dataInicio: null,
+            dataFinal: null,
+            tipoPrescricao: "prescricaoExercicioFisico"
+        }
         }
     },
     computed: {
@@ -56,14 +79,14 @@ export default {
             {
                 return null
             }
-            return this.$refs.email.checkValidity()
+            return this.$refs.email.checkValidity();
         },
-        statePassword() {
-            if(!this.password)
+        stateCausa() {
+            if(!this.causa)
             {
                 return null
             }
-            return this.password.length >= 3
+            return this.causa.length >= 5
         },
         invalidFeedbackEmail() {
             if(this.stateEmail)
@@ -72,37 +95,24 @@ export default {
             }
             return "Not a valid email address."
         },
-        invalidFeedbackPassword() {
-            if(this.statePassword)
+        invalidFeedbackCausa() {
+            if(this.stateCausa)
             {
                 return ""
             }
-            return "Password is too short (at least 3 in length)."
+            return "Causa is too short (at least 5 in length)."
         },
         isFormValid() {
-            return (this.stateEmail && this.password)
+            return (this.stateEmail && this.causa)
         }
     },
     methods: {
-        onSubmit() {
-            this.$auth.loginWith('local', {
-                data: {
-                    email: this.email,
-                    password: this.password
-                }
-            }).then(() => {
-                this.$toast.success('You are logged in!').goAway(3000)
-
-                if (this.$auth.user.groups.includes('Teacher')) {
-                    this.$router.push('/students')
-                }
-            }).catch(() => {
-                this.$toast.error('Sorry, you cant login. Ensure your credentials are correct').goAway(3000)
-            })
-        },
-        onReset() {
-            this.email = null
-            this.password = null
+        create () {
+            this.$axios
+                .$post('/api/prescricoes', this.prescricao)
+                .then(() => {
+                    this.$router.push('/prescricoes')
+                })
         }
     }
 }
