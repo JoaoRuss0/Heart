@@ -1,9 +1,13 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
+import pt.ipleiria.estg.dei.ei.dae.project.entities.DadoBiomedico;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,9 +35,9 @@ public class ConfigBean {
 
             administradorBean.create("A", "a.a@a.a", "1234");
 
-            dadoBiomedicoBean.create("Height", 272.0, 30.0, "cm");
-            dadoBiomedicoBean.create("Weight", 500.0, 1.0, "kg");
-            dadoBiomedicoBean.create("Age", 140.0, 0.0, "years");
+            dadoBiomedicoBean.create("Altura", "Altura do doente", 272.0, 30.0, "cm", Arrays.asList("Baixo","Alto","Médio"));
+            dadoBiomedicoBean.create("Peso", "Peso do doente", 500.0, 1.0, "kg", Arrays.asList("Gordo","Magro","Obeso","Normal"));
+            dadoBiomedicoBean.create("Idade", "Idade do doente", 140.0, 0.0, "years", Arrays.asList("Bebé","Criança","Adulto","Idoso"));
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
