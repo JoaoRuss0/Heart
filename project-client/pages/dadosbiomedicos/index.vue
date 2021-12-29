@@ -1,25 +1,3 @@
-<!--<template>
-    <div>
-        <b-container>
-            <b-table striped over :items="dados" :fields="fields">
-                <template #cell(buttons)="data">
-                    <a class="btn btn-danger" @click.prevent="">Delete</a>
-                </template>
-            </b-table>
-            <nuxt-link to="/dadosbiomedicos/create">
-                <button class="btn btn-dark">Create New Dado Biomedico</button>
-            </nuxt-link>
-            <nuxt-link to="/auth/login">
-                <button class="btn btn-warning">Return</button>
-            </nuxt-link>
-
-
-        </b-container>
-
-
-    </div>
-</template>-->
-
 <template>
     <b-container>
         <h1>Lista de Dados Biomedicos:</h1>
@@ -78,11 +56,6 @@ export default {
     },
     created() {
         this.$axios.$get('/api/dadosbiomedicos').then(dados => {
-
-            /*for (let i = 0; i < dados.length; i++) {
-                dados[i].name = dados[i].name.replace(/_/g,' ');
-            }*/
-
             this.dados = dados
         })
     },
