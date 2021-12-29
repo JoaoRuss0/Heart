@@ -5,41 +5,44 @@
         </h1>
         <b-form @submit.prevent="onSubmit" :disabled="!isFormValid">
 
+            <!-- Nome -->
             <b-form-group
                 id="inputNameGroup"
                 label="Nome:"
                 label-for="inputName"
-                :state="stateName"
             >
                 <b-form-input
                     id="inputName"
-                    v-model="dadoBiomedico.name"
+                    v-model="dadoBiomedico.nome"
                     placeholder="Escreva o nome"
                     required
                 ></b-form-input>
+
+
                 <div v-if="estadoNome()" style="color:red">
                     <p>Nomes usados:</p>
                     <div v-for="nome in this.todos">
-                        <li>{{nome.name}}</li>
+                        <li>{{nome.nome}}</li>
                     </div>
                 </div>
             </b-form-group>
 
+            <!-- Descricao -->
             <b-form-group
                 id="inputDescriptionGroup"
                 label="Descrição:"
                 label-for="inputDescription"
-                :state="stateDescription"
+
             >
                 <b-form-input
                     id="inputDescription"
                     v-model="dadoBiomedico.descricao"
                     placeholder="Escreva a descrição"
-
                     required
                 ></b-form-input>
             </b-form-group>
 
+            <!-- Minimo -->
             <b-form-group
                 id="inputMinimumGroup"
                 label="Valor mínimo:"
@@ -49,13 +52,14 @@
             >
                 <b-form-input
                     id="inputMinimum"
-                    v-model="dadoBiomedico.minimum"
+                    v-model="dadoBiomedico.minimo"
                     type="number"
-                    step="0.001"
+                    step="any"
                     required
                 ></b-form-input>
             </b-form-group>
 
+            <!-- Maximo -->
             <b-form-group
                 id="inputMaximumGroup"
                 label="Valor máximo:"
@@ -65,33 +69,35 @@
             >
                 <b-form-input
                     id="inputMaximum"
-                    v-model="dadoBiomedico.maximum"
+                    v-model="dadoBiomedico.maximo"
                     type="number"
-                    step="0.001"
+                    step="any"
 
                     required
                 ></b-form-input>
             </b-form-group>
 
+            <!-- Unidade de Medida -->
             <b-form-group
                 id="inputMeasuringUnitGroup"
                 label="Unidade de medida:"
                 label-for="inputMeasuringUnit"
-                :state="stateMeasuringUnit"
+
             >
 
                 <b-form-input
                     id="inputMeasuringUnit"
-                    v-model="dadoBiomedico.measuringUnit"
+                    v-model="dadoBiomedico.unidadeMedida"
                     placeholder="Escreva a unidade de medida"
                     required
                 ></b-form-input>
             </b-form-group>
 
+            <!-- Qualificadores -->
             <b-form-group
                 id="qualificador"
                 label="Qualificador:"
-                :state="stateQualificador"
+
             >
 
                <b-form-input
@@ -106,6 +112,7 @@
 
             </b-form-group>
 
+            <!-- Tabela Qualificadores -->
             <div v-if="this.dadoBiomedico.qualificadores!=''">
                 <p>Lista de Qualificadores:</p>
                 <table id="app" class="display table">
@@ -137,13 +144,13 @@ export default {
     data() {
         return {
             qualifier: "",
-            todos:'',
+            todos: [],
             dadoBiomedico: {
-                name: '',
+                nome: '',
                 descricao:'',
-                minimum: 0.0,
-                maximum: 0.0,
-                measuringUnit: '',
+                minimo: 0.0,
+                maximo: 0.0,
+                unidadeMedida: '',
                 qualificadores: []
             },
         }
@@ -155,28 +162,8 @@ export default {
         })
     },
     computed: {
-        stateName() {
-            if(!this.dadoBiomedico.name)
-            {
-                return null
-            }
-            return this.dadoBiomedico.name.length >= 0
-        },
-        stateDescription(){
-            if (!this.dadoBiomedico.description){
-                return null
-            }
-            return this.dadoBiomedico.description.length >= 0
-        },
         stateMinimumMaximum() {
-            return this.dadoBiomedico.minimum <= this.dadoBiomedico.maximum
-        },
-        stateQualificador(){
-            if(!this.dadoBiomedico.qualificadores)
-            {
-                return null
-            }
-            return this.dadoBiomedico.name.length >= 0
+            return this.dadoBiomedico.minimo <= this.dadoBiomedico.maximo
         },
         invalidFeedbackMinimum() {
             if(this.stateMinimumMaximum)
@@ -192,25 +179,14 @@ export default {
             }
             return "Maximum value has to be greater than or equal to Minimum value."
         },
-        stateMeasuringUnit() {
-            if(!this.dadoBiomedico.measuringUnit)
-            {
-                return null
-            }
-            return this.dadoBiomedico.measuringUnit.length >= 0
-        },
         isFormValid() {
-            return (this.stateName &&
-                    this.stateMeasuringUnit &&
-                    this.stateMinimumMaximum &&
-                    this.dadoBiomedico.qualificadores!='' &&
-                    this.dadoBiomedico.descricao!='')
+            return (this.stateMinimumMaximum &&this.dadoBiomedico.qualificadores!='' && !this.estadoNome())
         }
     },
     methods: {
         estadoNome(){
             for (let i = 0; i < this.todos.length; i++) {
-                if(this.dadoBiomedico.name.toUpperCase() == this.todos[i].name.toUpperCase()){
+                if(this.dadoBiomedico.nome.toUpperCase() === this.todos[i].nome.toUpperCase()){
                     alert("Atenção, o nome do dado não pode ser igual a um dado já criado")
                     return 1
                 }
@@ -221,11 +197,17 @@ export default {
             this.dadoBiomedico.qualificadores.splice(index, 1);
         },
         addQualifier(input) {
+            for (let i = 0; i < this.dadoBiomedico.qualificadores.length; i++) {
+                if(input == this.dadoBiomedico.qualificadores[i]){
+                    alert("Não pode repetir qualificadores!")
+                    return 0
+                }
+            }
             this.dadoBiomedico.qualificadores.push(input);
             this.qualifier='';
         },
         onSubmit(event) {
-            this.dadoBiomedico.name = this.dadoBiomedico.name.replace(/\s/g,'_');
+            this.dadoBiomedico.nome = this.dadoBiomedico.nome.replace(/\s/g,'_');
             this.$axios.$post('api/dadosbiomedicos/', this.dadoBiomedico)
             .then(() => {
                 this.$router.push("/dadosbiomedicos")

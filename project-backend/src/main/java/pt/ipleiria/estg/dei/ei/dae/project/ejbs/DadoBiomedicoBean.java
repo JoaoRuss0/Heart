@@ -14,14 +14,14 @@ public class DadoBiomedicoBean {
     @PersistenceContext
     EntityManager entityManager;
 
-    public DadoBiomedico create(String name, String descricao, Double maximum, Double minimum, String measuringUnit, List<String> qualificadores) throws Exception {
-        DadoBiomedico dadoBiomedico = find(name);
+    public DadoBiomedico create(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) throws Exception {
+        DadoBiomedico dadoBiomedico = find(nome);
 
         if(dadoBiomedico != null) {
-            throw new Exception("Found Dado Biomedico '" + name + "'.");
+            throw new Exception("Found Dado Biomedico '" + nome + "'.");
         }
 
-        dadoBiomedico = new DadoBiomedico(name, descricao, maximum, minimum, measuringUnit, qualificadores);
+        dadoBiomedico = new DadoBiomedico(nome, descricao, maximo, minimo, unidadeMedida, qualificadores);
         entityManager.persist(dadoBiomedico);
 
         return dadoBiomedico;
@@ -31,31 +31,31 @@ public class DadoBiomedicoBean {
         return entityManager.createNamedQuery("getAllDadosBiomedicos", DadoBiomedico.class).getResultList();
     }
 
-    public void deleteDado(String name){
-        DadoBiomedico dado = this.find(name);
+    public void deleteDado(String nome){
+        DadoBiomedico dado = this.find(nome);
 
         if(dado == null) {
-            throw new NotFoundException("Dado Biomedico with name " + name + " does not exist!");
+            throw new NotFoundException("Dado Biomedico with name " + nome + " does not exist!");
         }
         entityManager.remove(dado);
     }
 
-    public DadoBiomedico findOrFail(String name) {
-        DadoBiomedico dadoBiomedico = find(name);
+    public DadoBiomedico findOrFail(String nome) {
+        DadoBiomedico dadoBiomedico = find(nome);
 
         if(dadoBiomedico == null) {
-            throw new NotFoundException("Dado Biomedico '" + name + "' was not found.");
+            throw new NotFoundException("Dado Biomedico '" + nome + "' was not found.");
         }
 
         return dadoBiomedico;
     }
 
     public DadoBiomedico update(DadoBiomedico dado, DadoBiomedicoDTO dadoBiomedicoDTO) {
-        dado.setName(dadoBiomedicoDTO.getName());
+        dado.setNome(dadoBiomedicoDTO.getNome());
         dado.setDescricao(dadoBiomedicoDTO.getDescricao());
-        dado.setMinimum(dadoBiomedicoDTO.getMinimum());
-        dado.setMaximum(dadoBiomedicoDTO.getMaximum());
-        dado.setMeasuringUnit(dadoBiomedicoDTO.getMeasuringUnit());
+        dado.setMinimo(dadoBiomedicoDTO.getMinimo());
+        dado.setMaximo(dadoBiomedicoDTO.getMaximo());
+        dado.setUnidadeMedida(dadoBiomedicoDTO.getUnidadeMedida());
         dado.setQualificadores(dadoBiomedicoDTO.getQualificadores());
 
         entityManager.merge(dado);
@@ -63,7 +63,7 @@ public class DadoBiomedicoBean {
         return dado;
     }
 
-    public DadoBiomedico find(String name) {
-        return entityManager.find(DadoBiomedico.class, name);
+    public DadoBiomedico find(String nome) {
+        return entityManager.find(DadoBiomedico.class, nome);
     }
 }

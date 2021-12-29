@@ -3,19 +3,19 @@
         <b-container fluid="sm">
             <div v-if="dadoBiomedico">
                 <h1 class="mb-4 mt-4">
-                    Nome "{{ dadoBiomedico['name'] }}"
+                    Nome "{{ dadoBiomedico['nome'] }}"
                 </h1>
                 <b-row class="mb-3">
                     <b-col><strong>Descrição:</strong></b-col> <b-col>{{ dadoBiomedico['descricao'] }}</b-col>
                 </b-row>
                 <b-row class="mb-3">
-                    <b-col><strong>Valor mínimo:</strong></b-col> <b-col>{{ dadoBiomedico['minimum'] }}</b-col>
+                    <b-col><strong>Valor mínimo:</strong></b-col> <b-col>{{ dadoBiomedico['minimo'] }}</b-col>
                 </b-row>
                 <b-row class="mb-3">
-                    <b-col><strong>Valor máximo:</strong></b-col> <b-col>{{ dadoBiomedico['maximum'] }}</b-col>
+                    <b-col><strong>Valor máximo:</strong></b-col> <b-col>{{ dadoBiomedico['maximo'] }}</b-col>
                 </b-row>
                 <b-row class="mb-3">
-                    <b-col><strong>Unidade de medida:</strong></b-col> <b-col>{{ dadoBiomedico['measuringUnit'] }}</b-col>
+                    <b-col><strong>Unidade de medida:</strong></b-col> <b-col>{{ dadoBiomedico['unidadeMedida'] }}</b-col>
                 </b-row>
 
                 <b-row class="mb-3">
@@ -28,9 +28,6 @@
                     </tbody>
                 </table>
                 </b-row>
-
-
-
 
                 <b-row class="mb-3">
                     <b-col>
@@ -49,14 +46,11 @@ export default {
     data () {
         return {
             dadoBiomedico: null,
-
         }
     },
     created () {
 
         this.$axios.$get('api/dadosbiomedicos/' + this.$route.params.name).then((dadoBiomedico) => {
-
-            console.log(dadoBiomedico);
             this.dadoBiomedico = dadoBiomedico
         })
     },

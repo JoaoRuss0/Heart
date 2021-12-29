@@ -26,14 +26,13 @@ public class DadoBiomedicoService {
     }
 
     @GET
-    @Path("/{name}")
-    public Response getDadoBiomedico(@PathParam("name") String name){
-        DadoBiomedico dado = dadoBiomedicoBean.find(name);
+    @Path("/{nome}")
+    public Response getDadoBiomedico(@PathParam("nome") String nome){
+        DadoBiomedico dado = dadoBiomedicoBean.find(nome);
 
         if(dado == null) {
-            throw new NotFoundException("Dado Biomedico with name " + name + " does not exist!");
+            throw new NotFoundException("Dado Biomedico with name " + nome + " does not exist!");
         }
-
         return Response.ok(toDTO(dado)).build();
     }
 
@@ -41,18 +40,18 @@ public class DadoBiomedicoService {
     @POST
     @Path("/")
     public Response create(DadoBiomedicoDTO dadoBiomedicoDTO) throws Exception {
-        DadoBiomedico dadoBiomedico = dadoBiomedicoBean.find(dadoBiomedicoDTO.getName());
+        DadoBiomedico dadoBiomedico = dadoBiomedicoBean.find(dadoBiomedicoDTO.getNome());
 
         if(dadoBiomedico != null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
         dadoBiomedico = dadoBiomedicoBean.create(
-                dadoBiomedicoDTO.getName(),
+                dadoBiomedicoDTO.getNome(),
                 dadoBiomedicoDTO.getDescricao(),
-                dadoBiomedicoDTO.getMaximum(),
-                dadoBiomedicoDTO.getMinimum(),
-                dadoBiomedicoDTO.getMeasuringUnit(),
+                dadoBiomedicoDTO.getMaximo(),
+                dadoBiomedicoDTO.getMinimo(),
+                dadoBiomedicoDTO.getUnidadeMedida(),
                 dadoBiomedicoDTO.getQualificadores()
         );
 
@@ -60,23 +59,23 @@ public class DadoBiomedicoService {
     }
 
     @DELETE
-    @Path("/{name}")
-    public Response deleteDadoBiomedico(@PathParam("name") String name){
-        dadoBiomedicoBean.deleteDado(name);
+    @Path("/{nome}")
+    public Response deleteDadoBiomedico(@PathParam("nome") String nome){
+        dadoBiomedicoBean.deleteDado(nome);
 
-        if (dadoBiomedicoBean.find(name) != null) {
+        if (dadoBiomedicoBean.find(nome) != null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(Response.Status.ACCEPTED).build();
     }
 
     @PUT
-    @Path("/{name}/update")
-    public Response updateCourse(@PathParam("name") String name, DadoBiomedicoDTO dadoBiomedicoDTO){
-        DadoBiomedico dado = dadoBiomedicoBean.find(name);
+    @Path("/{nome}/update")
+    public Response updateCourse(@PathParam("nome") String nome, DadoBiomedicoDTO dadoBiomedicoDTO){
+        DadoBiomedico dado = dadoBiomedicoBean.find(nome);
 
         if(dado == null) {
-            throw new NotFoundException("Dado Biomedico with name " + name + " does not exist!");
+            throw new NotFoundException("Dado Biomedico with name " + nome + " does not exist!");
         }
 
         dado = dadoBiomedicoBean.update(dado, dadoBiomedicoDTO);
@@ -90,11 +89,11 @@ public class DadoBiomedicoService {
 
     private DadoBiomedicoDTO toDTO(DadoBiomedico dadoBiomedico) {
         return new DadoBiomedicoDTO(
-                dadoBiomedico.getName(),
+                dadoBiomedico.getNome(),
                 dadoBiomedico.getDescricao(),
-                dadoBiomedico.getMaximum(),
-                dadoBiomedico.getMinimum(),
-                dadoBiomedico.getMeasuringUnit(),
+                dadoBiomedico.getMaximo(),
+                dadoBiomedico.getMinimo(),
+                dadoBiomedico.getUnidadeMedida(),
                 dadoBiomedico.getQualificadores()
         );
     }

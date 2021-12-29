@@ -35,8 +35,8 @@
             <b-col class="text-right">
 
                 <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteDado()">Delete</b-button>
-                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].name}`)">Details</b-button>
-                <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].name}/update`)">Update</b-button>
+                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}`)">Details</b-button>
+                <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}/update`)">Update</b-button>
             </b-col>
         </template>
 
@@ -50,7 +50,7 @@ export default {
     data() {
         return {
             dados: [],
-            fields: ["name", "descricao", "maximum", "minimum", "measuringUnit", "qualificadores"],
+            fields: ["nome", "descricao", "maximo", "minimo", "unidadeMedida", "qualificadores"],
             selectedRow:[],
         }
     },
@@ -68,8 +68,7 @@ export default {
         },
 
         deleteDado() {
-            this.$axios.$delete(`/api/dadosbiomedicos/${this.selectedRow[0].name}`).then(response => {
-                //console.log(response)
+            this.$axios.$delete(`/api/dadosbiomedicos/${this.selectedRow[0].nome}`).then(response => {
                 this.$router.go()
             }).catch(error => console.log(error))
         }

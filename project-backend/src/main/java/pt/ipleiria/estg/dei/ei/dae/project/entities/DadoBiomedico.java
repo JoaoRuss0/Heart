@@ -9,35 +9,31 @@ import java.util.*;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllDadosBiomedicos",
-                query = "SELECT d FROM DadoBiomedico d ORDER BY d.name"
+                query = "SELECT d FROM DadoBiomedico d ORDER BY d.nome"
         )
 })
 public class DadoBiomedico {
 
     @Id
     @NotNull
-    private String name;
+    private String nome;
 
     @NotNull
     private String descricao;
 
     @NotNull
-    private Double maximum;
+    private Double maximo;
 
     @NotNull
-    private Double minimum;
+    private Double minimo;
 
     @NotNull
-    private String measuringUnit;
+    private String unidadeMedida;
 
     @ElementCollection
     private List<String> qualificadores;
 
-    /*static final List<String> qualificadores = new ArrayList<String>(Arrays.asList("muito baixo",
-            "baixo",
-            "normal",
-            "alto",
-            "muito alto"));*/
+
 
     //CRIAR OBSERVAÇÃO?  -> ligação entre doente e dado biomedico
     // quem?
@@ -50,50 +46,50 @@ public class DadoBiomedico {
     public DadoBiomedico() {
     }
 
-    public DadoBiomedico(String name, String descricao, Double maximum, Double minimum, String measuringUnit, List<String> qualificadores) {
-        this.name = name;
+    public DadoBiomedico(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) {
+        this.nome = nome;
         this.descricao = descricao;
-        this.maximum = maximum;
-        this.minimum = minimum;
-        this.measuringUnit = measuringUnit;
+        this.maximo = maximo;
+        this.minimo = minimo;
+        this.unidadeMedida = unidadeMedida;
         this.qualificadores = qualificadores;
     }
 
     /*Getters*/
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
     public String getDescricao() {
         return descricao;
     }
-    public Double getMaximum() {
-        return maximum;
+    public Double getMaximo() {
+        return maximo;
     }
-    public Double getMinimum() {
-        return minimum;
+    public Double getMinimo() {
+        return minimo;
     }
-    public String getMeasuringUnit() {
-        return measuringUnit;
+    public String getUnidadeMedida() {
+        return unidadeMedida;
     }
     public List<String> getQualificadores() {
         return qualificadores;
     }
 
     /*Setters*/
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String name) {
+        this.nome = name;
     }
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-    public void setMaximum(Double maximum) {
-        this.maximum = maximum;
+    public void setMaximo(Double maximum) {
+        this.maximo = maximum;
     }
-    public void setMinimum(Double minimum) {
-        this.minimum = minimum;
+    public void setMinimo(Double minimum) {
+        this.minimo = minimum;
     }
-    public void setMeasuringUnit(String unidade) {
-        this.measuringUnit = unidade;
+    public void setUnidadeMedida(String unidade) {
+        this.unidadeMedida = unidade;
     }
     public void setQualificadores(List<String> qualificadores) {
         this.qualificadores = qualificadores;
