@@ -9,51 +9,20 @@
     </context-param>
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>Dados Biomedicos List</web-resource-name>
-            <url-pattern>/api/dadosBiomedicos</url-pattern>
+            <web-resource-name>Dados Biomedicos</web-resource-name>
+            <url-pattern>/api/dadosBiomedicos/*</url-pattern>
             <http-method>GET</http-method>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Dados Biomedicos Detail</web-resource-name>
-            <url-pattern>/api/dadosBiomedicos/{nome}</url-pattern>
-            <http-method>GET</http-method>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Dados Biomedicos Create</web-resource-name>
-            <url-pattern>/api/dadosBiomedicos</url-pattern>
             <http-method>POST</http-method>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Dados Biomedicos Update</web-resource-name>
-            <url-pattern>/api/dadosBiomedicos/{nome}/update</url-pattern>
             <http-method>PUT</http-method>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Dados Biomedicos Delete</web-resource-name>
-            <url-pattern>/api/dadosBiomedicos/{nome}</url-pattern>
             <http-method>DELETE</http-method>
-        </web-resource-collection>
-
-
-        <web-resource-collection>
-            <web-resource-name>Users List</web-resource-name>
-            <url-pattern>/api/users</url-pattern>
-            <http-method>GET</http-method>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Users Create</web-resource-name>
-            <url-pattern>/api/users</url-pattern>
-            <http-method>POST</http-method>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Users Update</web-resource-name>
-            <url-pattern>/api/users/{id}</url-pattern>
-            <http-method>GET</http-method>
         </web-resource-collection>
         <auth-constraint>
             <role-name>Administrador</role-name>
+            <role-name>ProfissionalDeSaude</role-name>
         </auth-constraint>
     </security-constraint>
+
+
     <security-role>
         <role-name>Administrador</role-name>
     </security-role>
