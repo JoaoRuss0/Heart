@@ -125,8 +125,7 @@
                 </table>
             </div>
 
-
-
+            <!-- Botões -->
             <b-button type="submit" variant="primary" :disabled="!isFormValid">Criar</b-button>
             <b-button type="reset" variant="danger">Apagar</b-button>
             <nuxt-link to="/dadosbiomedicos">

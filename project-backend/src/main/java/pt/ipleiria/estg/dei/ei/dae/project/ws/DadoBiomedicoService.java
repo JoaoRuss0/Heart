@@ -28,14 +28,22 @@ public class DadoBiomedicoService {
     @GET
     @Path("/")
     public Response getAll() {
+
+        if(!(securityContext.isUserInRole("Administrador")||
+                securityContext.isUserInRole("ProfissionalDeSaude"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
         return Response.ok(toDTOs(dadoBiomedicoBean.getAll())).build();
+
     }
 
     @GET
     @Path("/{nome}")
     public Response getDadoBiomedico(@PathParam("nome") String nome){
 
-        if(!(securityContext.isUserInRole("Admin"))) {
+        if(!(securityContext.isUserInRole("Administrador")||
+                securityContext.isUserInRole("ProfissionalDeSaude"))) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -52,6 +60,13 @@ public class DadoBiomedicoService {
     @POST
     @Path("/")
     public Response create(DadoBiomedicoDTO dadoBiomedicoDTO) throws Exception {
+
+        if(!(securityContext.isUserInRole("Administrador")||
+                securityContext.isUserInRole("ProfissionalDeSaude"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+
         DadoBiomedico dadoBiomedico = dadoBiomedicoBean.find(dadoBiomedicoDTO.getNome());
 
         if(dadoBiomedico != null) {
@@ -73,6 +88,12 @@ public class DadoBiomedicoService {
     @DELETE
     @Path("/{nome}")
     public Response deleteDadoBiomedico(@PathParam("nome") String nome){
+
+        if(!(securityContext.isUserInRole("Administrador")||
+                securityContext.isUserInRole("ProfissionalDeSaude"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
         dadoBiomedicoBean.deleteDado(nome);
 
         if (dadoBiomedicoBean.find(nome) != null) {
@@ -84,6 +105,12 @@ public class DadoBiomedicoService {
     @PUT
     @Path("/{nome}/update")
     public Response updateDado(@PathParam("nome") String nome, DadoBiomedicoDTO dadoBiomedicoDTO){
+
+        if(!(securityContext.isUserInRole("Administrador")||
+                securityContext.isUserInRole("ProfissionalDeSaude"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
         DadoBiomedico dado = dadoBiomedicoBean.find(nome);
 
         if(dado == null) {
@@ -109,4 +136,6 @@ public class DadoBiomedicoService {
                 dadoBiomedico.getQualificadores()
         );
     }
+
+
 }

@@ -121,9 +121,10 @@ export default {
                 'maximo': this.dadoBiomedico.maximo,
                 'unidadeMedida': this.dadoBiomedico.unidadeMedida,
                 'qualificadores': this.dadoBiomedico.qualificadores,
-            }).then(() =>
+            }).then(() => {
                 this.$router.push('/dadosBiomedicos')
-            )
+                alert("Dado Biomedico '" + this.nome + "' atualizado!")
+            })
         }
     }
 }
