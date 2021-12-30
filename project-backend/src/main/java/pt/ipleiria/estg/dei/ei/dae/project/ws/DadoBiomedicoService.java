@@ -6,8 +6,11 @@ import pt.ipleiria.estg.dei.ei.dae.project.entities.DadoBiomedico;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,9 @@ public class DadoBiomedicoService {
     @EJB
     DadoBiomedicoBean dadoBiomedicoBean;
 
+    @Context
+    private SecurityContext securityContext;
+
     @GET
     @Path("/")
     public Response getAll() {
@@ -28,6 +34,12 @@ public class DadoBiomedicoService {
     @GET
     @Path("/{nome}")
     public Response getDadoBiomedico(@PathParam("nome") String nome){
+
+        if(!(securityContext.isUserInRole("Admin"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+
         DadoBiomedico dado = dadoBiomedicoBean.find(nome);
 
         if(dado == null) {
@@ -71,7 +83,7 @@ public class DadoBiomedicoService {
 
     @PUT
     @Path("/{nome}/update")
-    public Response updateCourse(@PathParam("nome") String nome, DadoBiomedicoDTO dadoBiomedicoDTO){
+    public Response updateDado(@PathParam("nome") String nome, DadoBiomedicoDTO dadoBiomedicoDTO){
         DadoBiomedico dado = dadoBiomedicoBean.find(nome);
 
         if(dado == null) {
