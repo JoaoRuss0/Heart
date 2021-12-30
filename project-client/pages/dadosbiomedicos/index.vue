@@ -1,4 +1,5 @@
 <template>
+    <div v-if="this.$auth.user.groups[0] != 'Doente'">
     <b-container>
         <h1>Lista de Dados Biomedicos:</h1>
         <template v-if="dados.length > 0">
@@ -41,6 +42,8 @@
         </template>
 
     </b-container>
+    </div>
+    <div v-else><h1>Sem acesso a esta página</h1></div>
 </template>
 
 
@@ -55,6 +58,7 @@ export default {
         }
     },
     created() {
+        console.log(this.$auth.user.groups[0]);
         this.$axios.$get('/api/dadosbiomedicos').then(dados => {
             this.dados = dados
         })

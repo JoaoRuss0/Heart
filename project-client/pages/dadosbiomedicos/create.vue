@@ -1,4 +1,5 @@
 <template>
+    <div v-if="this.$auth.user.groups[0] != 'Doente'">
     <b-container class="mt-4">
         <h1>
             Criar novo Dado Biomedico
@@ -133,6 +134,8 @@
             </nuxt-link>
         </b-form>
     </b-container>
+    </div>
+    <div v-else><h1>Sem acesso a esta página</h1></div>
 </template>
 
 

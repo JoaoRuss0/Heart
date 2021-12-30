@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="this.$auth.user.groups[0] != 'Doente'">
         <b-container>
             <h1 class="mb-4 mt-4">
                 Update Dado Biomédico '{{ this.nome }}'
@@ -66,6 +66,7 @@
             </b-form>
         </b-container>
     </div>
+    <div v-else><h1>Sem acesso a esta página</h1></div>
 </template>
 
 <script>
