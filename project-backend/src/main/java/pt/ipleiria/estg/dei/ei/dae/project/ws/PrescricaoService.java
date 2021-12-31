@@ -2,14 +2,18 @@ package pt.ipleiria.estg.dei.ei.dae.project.ws;
 
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.DoenteDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.PrescricaoDTO;
+import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.PrescricaoBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,12 +27,23 @@ public class PrescricaoService {
     private static final Logger logger = Logger.getLogger("Prescricao.logger");
 
     @EJB
+
     PrescricaoBean prescricaoBean;
+
+    @Context
+    SecurityContext securityContext;
+
+    @EJB
+    DoenteBean doenteBean;
 
     @GET
     @Path("/")
     public Response getAll()
     {
+        Principal principal = securityContext.getUserPrincipal();
+        if((securityContext.isUserInRole("Doente"))){
+           return Response.ok(toDTOs(doenteBean.find(principal.getName()).getPrescricoes())).build();
+        }
         return Response.ok(toDTOs(prescricaoBean.getAll())).build();
     }
 
@@ -75,7 +90,7 @@ public class PrescricaoService {
             throw new NotFoundException("Course with id " + id + " does not exist!");
         }
 
-        prescricao = prescricaoBean.updatePrescricao(prescricao, prescricaoDTO.getCausa());
+        prescricao = prescricaoBean.updatePrescricao(prescricao, prescricaoDTO.getCausa(), prescricaoDTO.getDataInicio(), prescricaoDTO.getDataFinal(), prescricaoDTO.getTipoPrescricao());
         return Response.ok(toDTOPrescricao(prescricao)).build();
     }
 
@@ -91,7 +106,17 @@ public class PrescricaoService {
         return Response.status(Response.Status.ACCEPTED).build();
     }
 
+    @GET
+    @Path("/{id}")
+    public Response getDadoBiomedico(@PathParam("id") int id){
+        Prescricao prescricao = prescricaoBean.find(id);
 
+        if(prescricao == null) {
+            throw new NotFoundException("Dado Biomedico with name " + id + " does not exist!");
+        }
+
+        return Response.ok(toDTOPrescricao(prescricao)).build();
+    }
 
 
 

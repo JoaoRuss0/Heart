@@ -6,7 +6,6 @@ import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.GenerationType;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.NotFoundException;
 import java.text.DateFormat;
@@ -61,11 +60,15 @@ public class PrescricaoBean {
     }
 
 
-    public Prescricao updatePrescricao(Prescricao prescricao, String causa) {
+    public Prescricao updatePrescricao(Prescricao prescricao, String causa, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) throws ParseException {
         prescricao.setCausa(causa);
-        entityManager.merge(causa);
+        prescricao.setTipoPrescricao(tipoPrescricao);
+        prescricao.setDataInicio(stringToGregorian(dataInicio));
+        prescricao.setDataFinal(stringToGregorian(dataFinal));
+        entityManager.merge(prescricao);
         return prescricao;
     }
+
 
     public void deletePrescricao(int id) throws Exception {
         Prescricao prescricao = this.find(id);

@@ -3,16 +3,18 @@ package pt.ipleiria.estg.dei.ei.dae.project.ws;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.DoenteDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.PrescricaoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.persistence.EntityManager;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,4 +64,27 @@ public class DoenteService {
                 prescricao.getTipoPrescricao()
         );
     }
+
+
+    @Context
+    private SecurityContext securityContext;
+    private EntityManager em;
+
+    @GET
+    @Path("/{email}")
+    public Response getDoente(@PathParam("email") String email) throws Exception{
+
+
+        if(!(securityContext.isUserInRole("Administrador"))){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        Doente doente = doenteBean.find(email);
+
+        if(doente == null) {
+            throw new NotFoundException("Dado Biomedico with name " + email + " does not exist!");
+        }
+        return Response.ok(toDTODoente(doente)).build();
+    }
+
+
 }

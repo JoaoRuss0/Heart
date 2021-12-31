@@ -30,13 +30,13 @@
             <b-col class="text-left">
                 <b-button variant="success" @click="pushRoute(`/prescricoes/create/`)">Criar Prescrição</b-button>
             </b-col>
-            <!--  <template v-if="prescricoes.length > 0">
+             <template v-if="prescricoes.length > 0">
                  <b-col class="text-right">
-                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].email}/`)">Details</b-button>
-                     <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].email}/update`)">Update</b-button>
-                     <b-button variant="danger"  :disabled="selectedRow.length == 0" @click="deleteUser()">Delete</b-button>
+                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
+                     <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
+                     <b-button variant="danger" :disabled="selectedRow.length == 0"  @click="deleteUser()">Delete</b-button>
                  </b-col>
-             </template> -->
+             </template>
         </b-row>
 
     </b-container>
@@ -47,7 +47,8 @@ export default {
     data() {
         return {
             prescricoes: [],
-            fields: ["id", "causa", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao"]
+            fields: ["id", "causa", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao"],
+            selectedRow: []
         }
     },
     created() {
@@ -61,6 +62,12 @@ export default {
         },
         pushRoute(route) {
             this.$router.push(route)
+        },
+        deleteUser() {
+            this.$axios.$delete(`/api/prescricoes/${this.selectedRow[0].id}`).then(response => {
+                console.log(response)
+                this.$router.go()
+            }).catch(error => console.log(error))
         },
     }
 }
