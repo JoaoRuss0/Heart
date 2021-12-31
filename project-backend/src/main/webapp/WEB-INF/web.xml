@@ -6,26 +6,85 @@
         <param-name>resteasy.role.based.security</param-name>
         <param-value>true</param-value>
     </context-param>
+
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>Users List</web-resource-name>
+            <web-resource-name>Users All</web-resource-name>
             <url-pattern>/api/users</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Users Create</web-resource-name>
-            <url-pattern>/api/users</url-pattern>
-            <http-method>POST</http-method>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>Users Update</web-resource-name>
-            <url-pattern>/api/users/{id}</url-pattern>
-            <http-method>GET</http-method>
-        </web-resource-collection>
+
         <auth-constraint>
             <role-name>Administrador</role-name>
         </auth-constraint>
     </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Administrators CRUD</web-resource-name>
+            <url-pattern>/api/administradores/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>PUT</http-method>
+            <http-method>POST</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+
+        <auth-constraint>
+            <role-name>Administrador</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Profissional De Saude All, New Or Delete</web-resource-name>
+            <url-pattern>/api/profissionaisdesaude</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+
+        <auth-constraint>
+            <role-name>Administrador</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Profissional De Saude All, New Or Delete</web-resource-name>
+            <url-pattern>/api/profissionaisdesaude/*</url-pattern>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+
+        <auth-constraint>
+            <role-name>Administrador</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Doentes All</web-resource-name>
+            <url-pattern>/api/doentes</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+
+        <auth-constraint>
+            <role-name>Administrador</role-name>
+            <role-name>ProfissionalDeSaude</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Doentes Post and Delete</web-resource-name>
+            <url-pattern>/api/doentes/*</url-pattern>
+            <http-method>POST</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+
+        <auth-constraint>
+            <role-name>ProfissionalDeSaude</role-name>
+        </auth-constraint>
+    </security-constraint>
+
     <security-role>
         <role-name>Administrador</role-name>
     </security-role>

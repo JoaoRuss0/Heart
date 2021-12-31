@@ -2,7 +2,6 @@ package pt.ipleiria.estg.dei.ei.dae.project.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "DOENTES")

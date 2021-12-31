@@ -91,9 +91,14 @@ export default {
             }
         }
     },
+
     router: {
         middleware: [
             'auth'
         ]
+    },
+
+    toast: {
+        duration: 5000,
     }
 }

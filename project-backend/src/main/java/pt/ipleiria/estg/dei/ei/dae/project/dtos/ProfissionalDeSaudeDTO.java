@@ -2,22 +2,21 @@ package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
 import java.io.Serializable;
 
-public class AdministradorDTO implements Serializable {
+public class ProfissionalDeSaudeDTO implements Serializable {
 
     private String email;
     private String name;
     private String password;
 
-    public AdministradorDTO() {
-
+    public ProfissionalDeSaudeDTO() {
     }
 
-    public AdministradorDTO(String name, String email) {
+    public ProfissionalDeSaudeDTO(String name, String email) {
         this.name = name;
         this.email = email;
     }
 
-    public AdministradorDTO(String name, String email, String password) {
+    public ProfissionalDeSaudeDTO(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -44,5 +43,4 @@ public class AdministradorDTO implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }

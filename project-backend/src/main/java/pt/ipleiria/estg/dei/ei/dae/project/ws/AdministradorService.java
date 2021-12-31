@@ -1,16 +1,21 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ws;
 
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.AdministradorDTO;
-import pt.ipleiria.estg.dei.ei.dae.project.dtos.UserDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.AdministradorBean;
-import pt.ipleiria.estg.dei.ei.dae.project.ejbs.UserBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
-import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyDeleteYourselfException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,57 +27,62 @@ public class AdministradorService {
     @EJB
     private AdministradorBean administradorBean;
 
-    @EJB
-    private UserBean userBean;
+    @Context
+    private SecurityContext securityContext;
 
     @GET
-    @Path("/")
-    public Response getAll()
-    {
-        return Response.ok(toDTOsAdministradores(administradorBean.getAll())).build();
+    @Path("/{email}")
+    public Response get(@PathParam("email") String email) throws MyEntityNotFoundException {
+        Administrador administrador = administradorBean.find(email);
+
+        if(administrador == null) {
+            throw new MyEntityNotFoundException("Administrator with email = '" + email + "' not found.");
+        }
+
+        return Response.ok(toDTO(administrador)).build();
     }
 
     @POST
     @Path("/")
-    public Response create(UserDTO userDTO) throws Exception {
-        User user = userBean.find(userDTO.getEmail());
+    public Response create(AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityExistsException {
+        Administrador administrador = administradorBean.create(
+                administradorDTO.getName(),
+                administradorDTO.getEmail(),
+                administradorDTO.getPassword()
+        );
 
-        if(user != null) {
-            throw new Exception("Found user with email='" + userDTO.getEmail() + "'");
-        }
-
-        String tipo = userDTO.getTipo();
-        if(tipo.equals("Administrador")) {
-            user = administradorBean.create(
-                    userDTO.getName(),
-                    userDTO.getEmail(),
-                    userDTO.getPassword()
-            );
-        } else if(tipo.equals("ProfissionalDeSaude")) {
-
-        } else {
-            throw new Exception("Type of user does not match any creatable user types.");
-        }
-
-        return Response.ok(toDTOUser(user)).build();
+        return Response.ok(administrador.getEmail()).build();
     }
 
-    private List<AdministradorDTO> toDTOsAdministradores(List<Administrador> administradores) {
-        return administradores.stream().map(this::toDTOAdministrador).collect(Collectors.toList());
+    @PUT
+    @Path("/{email}")
+    public Response update(@PathParam("email") String email, AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+        Administrador administrador = administradorBean.update(administradorDTO.getName(), email);
+        return Response.ok(email).build();
     }
 
-    private AdministradorDTO toDTOAdministrador(Administrador administrador) {
+    @DELETE
+    @Path("/{email}")
+    public Response delete(@PathParam("email") String email) throws MyDeleteYourselfException, MyEntityNotFoundException{
+        Principal principal = securityContext.getUserPrincipal();
+
+        if(principal.getName().equals(email))
+        {
+            throw new MyDeleteYourselfException("Can not delete yourself.");
+        }
+
+        administradorBean.delete(email);
+        return Response.ok(email).build();
+    }
+
+    private List<AdministradorDTO> toDTOs(List<Administrador> administradores) {
+        return administradores.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    private AdministradorDTO toDTO(Administrador administrador) {
         return new AdministradorDTO(
                 administrador.getName(),
                 administrador.getEmail()
-        );
-    }
-
-    private UserDTO toDTOUser(User user) {
-        return new UserDTO(
-                user.getName(),
-                user.getEmail(),
-                user.getClass().getSimpleName()
         );
     }
 }

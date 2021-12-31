@@ -1,12 +1,12 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.NotFoundException;
 import java.util.List;
 
 @Stateless
@@ -32,11 +32,11 @@ public class UserBean {
         throw new Exception("Failed logging in with email '" + email + "': unknown email or wrong password");
     }
 
-    public User findOrFail(String email) {
+    public User findOrFail(String email) throws MyEntityNotFoundException {
         User user = find(email);
 
         if(user == null) {
-            throw new NotFoundException("User with email='" + email +"' was not found.");
+            throw new MyEntityNotFoundException("User with email='" + email +"' was not found.");
         }
 
         return user;

@@ -9,6 +9,7 @@ public class DoenteDTO implements Serializable {
     private int idade;
     private double peso;
     private double altura;
+    private String password;
 
     public DoenteDTO() {
 
@@ -20,6 +21,15 @@ public class DoenteDTO implements Serializable {
         this.idade = idade;
         this.peso = peso;
         this.altura = altura;
+    }
+
+    public DoenteDTO(String name, String email, int idade, double peso, double altura, String password) {
+        this.name = name;
+        this.email = email;
+        this.idade = idade;
+        this.peso = peso;
+        this.altura = altura;
+        this.password = password;
     }
 
     /*Getters*/
@@ -38,6 +48,9 @@ public class DoenteDTO implements Serializable {
     public double getAltura() {
         return altura;
     }
+    public String getPassword() {
+        return password;
+    }
 
     /*Setters*/
     public void setName(String name) {
@@ -54,5 +67,8 @@ public class DoenteDTO implements Serializable {
     }
     public void setAltura(double altura) {
         this.altura = altura;
+    }
+    public void setPassword(String Password) {
+        this.password = password;
     }
 }

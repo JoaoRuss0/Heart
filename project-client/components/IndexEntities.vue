@@ -13,18 +13,9 @@
 </template>
 
 <script>
-import Spinner from "../../../components/Spinner";
+import Spinner from "./Spinner";
 export default {
+    props: ["user"],
     components: {Spinner},
-    data() {
-        return {
-            user: null
-        }
-    },
-    created() {
-        this.$axios.$get(`/api/users/${this.$route.params.id}`).then(user => {
-            this.user = user
-        }).catch(error => console.log(error))
-    }
 }
 </script>

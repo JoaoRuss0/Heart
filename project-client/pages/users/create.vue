@@ -144,9 +144,12 @@ export default {
             }
         },
         onSubmit() {
-            this.$axios.$post("/api/administradores/", this.user).then(response => {
-                alert(response)
-            }).catch(error => console.log(error))
+            this.$axios.$post("/api/" + ((this.user.tipo == "Administrador") ? "administradores/" : "profissionaisdesaude/"), this.user).then(response => {
+                this.$router.push("/users")
+                this.$toast.success("Successfully created new " + this.user.tipo + " (" + this.user.email + ").")
+            }).catch(error => {
+                this.$toast.error("Could not create new " + this.user.tipo + ".<\/br>Error: '" + error.response.data + "'")
+            })
         },
         onReset() {
             this.user.name = null
