@@ -20,7 +20,6 @@
                     required
                 ></b-form-input>
             </b-form-group>
-
             <b-form-group
                 id="inputMinimumGroup"
                 label="Minimum:"
@@ -38,7 +37,6 @@
                     required
                 ></b-form-input>
             </b-form-group>
-
             <b-form-group
                 id="inputMaximumGroup"
                 label="Maximum:"
@@ -56,7 +54,6 @@
                     required
                 ></b-form-input>
             </b-form-group>
-
             <b-form-group
                 id="inputMeasuringUnitGroup"
                 label="Measuring Unit:"
@@ -73,8 +70,10 @@
                     required
                 ></b-form-input>
             </b-form-group>
-            <b-button type="submit" variant="primary" :disabled="!isFormValid">Submit</b-button>
-            <b-button type="reset" variant="danger">Reset</b-button>
+            <div class="text-right">
+                <b-button variant="primary" type="submit" :disabled="!isFormValid">Create</b-button>
+                <b-button variant="danger" type="reset">Reset</b-button>
+            </div>
         </b-form>
     </b-container>
 </template>
