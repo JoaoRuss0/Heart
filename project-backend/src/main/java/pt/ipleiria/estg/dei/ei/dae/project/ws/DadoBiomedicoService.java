@@ -10,7 +10,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,6 @@ public class DadoBiomedicoService {
         }
         return Response.ok(toDTO(dado)).build();
     }
-
 
     @POST
     @Path("/")
@@ -121,7 +119,6 @@ public class DadoBiomedicoService {
         return Response.ok(toDTO(dado)).build();
     }
 
-
     private List<DadoBiomedicoDTO> toDTOs(List<DadoBiomedico> dadoBiomedicos) {
         return dadoBiomedicos.stream().map(this::toDTO).collect(Collectors.toList());
     }
@@ -136,6 +133,4 @@ public class DadoBiomedicoService {
                 dadoBiomedico.getQualificadores()
         );
     }
-
-
 }

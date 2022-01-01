@@ -11,8 +11,6 @@ import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
