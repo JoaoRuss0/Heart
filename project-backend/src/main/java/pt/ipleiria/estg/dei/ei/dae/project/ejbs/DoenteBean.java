@@ -81,3 +81,4 @@ public class DoenteBean {
         return entityManager.find(Doente.class, email);
     }
 }
+
