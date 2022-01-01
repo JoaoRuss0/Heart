@@ -50,7 +50,6 @@ export default {
         }
     },
     created () {
-
         this.$axios.$get('api/dadosbiomedicos/' + this.$route.params.name).then((dadoBiomedico) => {
             this.dadoBiomedico = dadoBiomedico
         })

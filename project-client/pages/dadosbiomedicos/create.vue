@@ -172,14 +172,14 @@ export default {
             {
                 return ""
             }
-            return "Minimum value has to be less than or equal to Maximum value."
+            return "Valor mínimo tem de ser menor ou igual ao máximo."
         },
         invalidFeedbackMaximum() {
             if(this.stateMinimumMaximum)
             {
                 return ""
             }
-            return "Maximum value has to be greater than or equal to Minimum value."
+            return "Valor máximo tem de ser maior ou igual ao mínimo."
         },
         isFormValid() {
             return (this.stateMinimumMaximum &&this.dadoBiomedico.qualificadores!='' && !this.estadoNome())

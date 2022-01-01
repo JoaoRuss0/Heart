@@ -35,9 +35,9 @@
         <template v-if="dados.length > 0">
             <b-col class="text-right">
 
-                <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteDado()">Delete</b-button>
-                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}`)">Details</b-button>
-                <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}/update`)">Update</b-button>
+                <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteDado()">Apagar</b-button>
+                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}`)">Detalhes</b-button>
+                <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}/update`)">Atualizar</b-button>
             </b-col>
         </template>
 
@@ -58,7 +58,7 @@ export default {
         }
     },
     created() {
-        console.log(this.$auth.user.groups[0]);
+
         this.$axios.$get('/api/dadosbiomedicos').then(dados => {
             this.dados = dados
         })
