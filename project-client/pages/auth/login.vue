@@ -43,7 +43,7 @@
 
 <script>
 export default {
-    auth: false,
+    auth: 'guest',
     data() {
         return {
             email: null,
@@ -56,7 +56,7 @@ export default {
             {
                 return null
             }
-            return this.$refs.email.checkValidity()
+            return this.$refs.email.checkValidity();
         },
         statePassword() {
             if(!this.password)
@@ -93,8 +93,8 @@ export default {
             }).then(() => {
                 this.$toast.success('You are logged in!').goAway(3000)
 
-                if (this.$auth.user.groups.includes('Teacher')) {
-                    this.$router.push('/students')
+                if (this.$auth.user.groups.includes('Administrador')) {
+                    this.$router.push('/users')
                 }
             }).catch(() => {
                 this.$toast.error('Sorry, you cant login. Ensure your credentials are correct').goAway(3000)

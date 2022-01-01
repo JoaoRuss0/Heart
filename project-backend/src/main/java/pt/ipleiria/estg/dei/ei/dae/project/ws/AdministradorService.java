@@ -1,43 +1,88 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ws;
 
-import pt.ipleiria.estg.dei.ei.dae.project.dtos.UserDTO;
+import pt.ipleiria.estg.dei.ei.dae.project.dtos.AdministradorDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.AdministradorBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyDeleteYourselfException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("administradores")
-@Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_JSON})
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class AdministradorService {
 
     @EJB
-    AdministradorBean administradorBean;
+    private AdministradorBean administradorBean;
+
+    @Context
+    private SecurityContext securityContext;
 
     @GET
+    @Path("/{email}")
+    public Response get(@PathParam("email") String email) throws MyEntityNotFoundException {
+        Administrador administrador = administradorBean.find(email);
+
+        if(administrador == null) {
+            throw new MyEntityNotFoundException("Administrator with email = '" + email + "' not found.");
+        }
+
+        return Response.ok(toDTO(administrador)).build();
+    }
+
+    @POST
     @Path("/")
-    public Response getAll()
-    {
-        return Response.ok(toDTOs(administradorBean.getAll())).build();
+    public Response create(AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityExistsException {
+        Administrador administrador = administradorBean.create(
+                administradorDTO.getName(),
+                administradorDTO.getEmail(),
+                administradorDTO.getPassword()
+        );
+
+        return Response.ok(administrador.getEmail()).build();
     }
 
-    private List<UserDTO> toDTOs(List<Administrador> doentes) {
-        return doentes.stream().map(this::toDTO).collect(Collectors.toList());
+    @PUT
+    @Path("/{email}")
+    public Response update(@PathParam("email") String email, AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+        Administrador administrador = administradorBean.update(administradorDTO.getName(), email);
+        return Response.ok(email).build();
     }
 
-    private UserDTO toDTO(Administrador administrador) {
-        return new UserDTO(
+    @DELETE
+    @Path("/{email}")
+    public Response delete(@PathParam("email") String email) throws MyDeleteYourselfException, MyEntityNotFoundException{
+        Principal principal = securityContext.getUserPrincipal();
+
+        if(principal.getName().equals(email))
+        {
+            throw new MyDeleteYourselfException("Can not delete yourself.");
+        }
+
+        administradorBean.delete(email);
+        return Response.ok(email).build();
+    }
+
+    private List<AdministradorDTO> toDTOs(List<Administrador> administradores) {
+        return administradores.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    private AdministradorDTO toDTO(Administrador administrador) {
+        return new AdministradorDTO(
                 administrador.getName(),
-                administrador.getEmail(),
-                administrador.getPassword()
+                administrador.getEmail()
         );
     }
 }

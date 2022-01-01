@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
             query = "SELECT d FROM Doente d ORDER BY d.name"
         )
 })
-public class Doente extends User{
+public class Doente extends User {
 
     @NotNull
     private int idade;

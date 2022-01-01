@@ -38,6 +38,10 @@ export default {
         '@nuxtjs/toast'
     ],
 
+    bootstrapVue: {
+        icons: true
+    },
+
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         proxy: true,
@@ -87,9 +91,14 @@ export default {
             }
         }
     },
+
     router: {
         middleware: [
             'auth'
         ]
+    },
+
+    toast: {
+        duration: 5000,
     }
 }
