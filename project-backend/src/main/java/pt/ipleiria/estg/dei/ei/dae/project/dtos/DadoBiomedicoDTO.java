@@ -1,49 +1,69 @@
 package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class DadoBiomedicoDTO implements Serializable {
 
-    private String name;
-    private Double maximum;
-    private Double minimum;
-    private String measuringUnit;
+    private String nome;
+    private String descricao;
+    private Double maximo;
+    private Double minimo;
+    private String unidadeMedida;
+    private List<String> qualificadores;
+
+
 
     public DadoBiomedicoDTO() {
     }
 
-    public DadoBiomedicoDTO(String name, Double maximum, Double minimum, String unidade) {
-        this.name = name;
-        this.maximum = maximum;
-        this.minimum = minimum;
-        this.measuringUnit = unidade;
+
+    public DadoBiomedicoDTO(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.maximo = maximo;
+        this.minimo = minimo;
+        this.unidadeMedida = unidadeMedida;
+        this.qualificadores = qualificadores;
     }
 
     /*Getters*/
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
-    public Double getMaximum() {
-        return maximum;
+    public String getDescricao() {
+        return descricao;
     }
-    public Double getMinimum() {
-        return minimum;
+    public Double getMaximo() {
+        return maximo;
     }
-    public String getMeasuringUnit() {
-        return measuringUnit;
+    public Double getMinimo() {
+        return minimo;
+    }
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+    public List<String> getQualificadores() {
+        return qualificadores;
     }
 
     /*Setters*/
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
-    public void setMaximum(Double maximum) {
-        this.maximum = maximum;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
-    public void setMinimum(Double minimum) {
-        this.minimum = minimum;
+    public void setMaximo(Double maximo) {
+        this.maximo = maximo;
     }
-    public void setMeasuringUnit(String unidade) {
-        this.measuringUnit = unidade;
+    public void setMinimo(Double minimo) {
+        this.minimo = minimo;
+    }
+    public void setUnidadeMedida(String unidade) {
+        this.unidadeMedida = unidade;
+    }
+    public void setQualificadores(List<String> qualificadores) {
+        this.qualificadores = qualificadores;
     }
 }
