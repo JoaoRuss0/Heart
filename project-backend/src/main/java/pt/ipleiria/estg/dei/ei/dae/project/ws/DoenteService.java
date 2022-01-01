@@ -3,20 +3,16 @@ package pt.ipleiria.estg.dei.ei.dae.project.ws;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.DoenteDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.PrescricaoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
-import pt.ipleiria.estg.dei.ei.dae.project.dtos.ProfissionalDeSaudeDTO;
-import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
-import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyDeleteYourselfException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -64,7 +60,7 @@ public class DoenteService {
             throw new MyEntityNotFoundException("Doente with email = '" + email + "' not found.");
         }
 
-        return Response.ok(toDTO(doente)).build();
+        return Response.ok(toDTODoente(doente)).build();
     }
 
     @POST
@@ -92,7 +88,7 @@ public class DoenteService {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        Doente doente = doenteBean.update(
+        doenteBean.update(
                 doenteDTO.getName(),
                 email,
                 doenteDTO.getIdade(),
@@ -109,15 +105,11 @@ public class DoenteService {
         return Response.ok(email).build();
     }
 
-    private List<DoenteDTO> toDTOs(List<Doente> doentes) {
-        return doentes.stream().map(this::toDTO).collect(Collectors.toList());
-    }
-  
-  private List<DoenteDTO> toDTOsDoente(List<Doente> doentes) {
+    private List<DoenteDTO> toDTOsDoente(List<Doente> doentes) {
         return doentes.stream().map(this::toDTODoente).collect(Collectors.toList());
-  }
+    }
 
-  private DoenteDTO toDTODoente(Doente doente) {
+    private DoenteDTO toDTODoente(Doente doente) {
         return new DoenteDTO(
                 doente.getName(),
                 doente.getEmail(),
@@ -141,26 +133,5 @@ public class DoenteService {
                 prescricao.getDataFinal(),
                 prescricao.getTipoPrescricao()
         );
-    }
-
-
-    @Context
-    private SecurityContext securityContext;
-    private EntityManager em;
-
-    @GET
-    @Path("/{email}")
-    public Response getDoente(@PathParam("email") String email) throws Exception{
-
-
-        if(!(securityContext.isUserInRole("Administrador"))){
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-        Doente doente = doenteBean.find(email);
-
-        if(doente == null) {
-            throw new NotFoundException("Dado Biomedico with name " + email + " does not exist!");
-        }
-        return Response.ok(toDTODoente(doente)).build();
     }
 }
