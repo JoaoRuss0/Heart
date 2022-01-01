@@ -43,7 +43,9 @@
                 ></b-form-input>
             </b-form-group>
 
+
             <!-- Minimo -->
+
             <b-form-group
                 id="inputMinimumGroup"
                 label="Valor mínimo:"
@@ -60,7 +62,9 @@
                 ></b-form-input>
             </b-form-group>
 
+
             <!-- Maximo -->
+
             <b-form-group
                 id="inputMaximumGroup"
                 label="Valor máximo:"
@@ -78,7 +82,9 @@
                 ></b-form-input>
             </b-form-group>
 
+
             <!-- Unidade de Medida -->
+
             <b-form-group
                 id="inputMeasuringUnitGroup"
                 label="Unidade de medida:"
@@ -93,6 +99,7 @@
                     required
                 ></b-form-input>
             </b-form-group>
+
 
             <!-- Qualificadores -->
             <b-form-group
@@ -132,6 +139,12 @@
             <nuxt-link to="/dadosbiomedicos">
                 <button class="btn btn-warning">Voltar</button>
             </nuxt-link>
+
+            <div class="text-right">
+                <b-button variant="primary" type="submit" :disabled="!isFormValid">Create</b-button>
+                <b-button variant="danger" type="reset">Reset</b-button>
+            </div>
+
         </b-form>
     </b-container>
     </div>

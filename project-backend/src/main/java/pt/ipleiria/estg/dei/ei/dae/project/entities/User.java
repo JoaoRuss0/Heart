@@ -14,9 +14,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Entity
-@MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class User implements Serializable {
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllUsers",
+                query = "SELECT u FROM User u ORDER BY u.name"
+        )
+})
+public abstract class User implements Serializable {
 
     @Id
     @Email

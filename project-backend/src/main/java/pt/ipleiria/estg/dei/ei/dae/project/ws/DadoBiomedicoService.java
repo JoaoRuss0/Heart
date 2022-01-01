@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("dadosbiomedicos")
-@Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_JSON})
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class DadoBiomedicoService {
 
     @EJB
