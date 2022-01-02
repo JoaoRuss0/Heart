@@ -112,7 +112,7 @@ public class PrescricaoService {
 
     @DELETE
     @Path("/{id}")
-    public Response deleteCourse(@PathParam("id") int id) throws Exception {
+    public Response delete(@PathParam("id") int id) throws Exception {
         prescricaoBean.deletePrescricao(id);
 
         if (prescricaoBean.find(id) != null) {

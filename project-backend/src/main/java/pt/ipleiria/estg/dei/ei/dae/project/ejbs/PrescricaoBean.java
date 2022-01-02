@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.project.ws.UserService;
 
 import javax.ejb.EJB;
@@ -55,14 +56,14 @@ public class PrescricaoBean {
         return entityManager.createNamedQuery("getAllPrescricoes", Prescricao.class).getResultList();
     }
 
-    private int findOrFail(int id){
+    private Prescricao findOrFail(int id) throws MyEntityNotFoundException {
         Prescricao prescricao = find(id);
 
         if(prescricao == null){
-            throw new NotFoundException("Prescricao with id = '" + id + "' not found.");
+            throw new MyEntityNotFoundException("Prescricao with id = '" + id + "' not found.");
         }
 
-        return id;
+        return prescricao;
     }
 
     public Prescricao find(int id) {
@@ -81,11 +82,7 @@ public class PrescricaoBean {
 
 
     public void deletePrescricao(int id) throws Exception {
-        Prescricao prescricao = this.find(id);
-
-        if(prescricao == null) {
-            throw new NotFoundException("Prescricao with code " + id + " does not exist!");
-        }
+        Prescricao prescricao = this.findOrFail(id);
         entityManager.remove(prescricao);
     }
 

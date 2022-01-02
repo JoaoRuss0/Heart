@@ -2,6 +2,8 @@ package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.DadoBiomedicoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.DadoBiomedico;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -40,11 +42,11 @@ public class DadoBiomedicoBean {
         entityManager.remove(dado);
     }
 
-    public DadoBiomedico findOrFail(String nome) {
+    public DadoBiomedico findOrFail(String nome) throws MyEntityNotFoundException {
         DadoBiomedico dadoBiomedico = find(nome);
 
         if(dadoBiomedico == null) {
-            throw new NotFoundException("Dado Biomedico '" + nome + "' was not found.");
+            throw new MyEntityNotFoundException("Dado Biomedico '" + nome + "' was not found.");
         }
 
         return dadoBiomedico;

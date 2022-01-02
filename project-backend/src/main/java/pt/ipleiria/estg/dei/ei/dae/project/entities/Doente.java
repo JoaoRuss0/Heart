@@ -31,8 +31,12 @@ public class Doente extends User {
     @OneToMany(mappedBy = "doente", cascade = CascadeType.REMOVE)
     private ArrayList<Prescricao> prescricoes;
 
+    @OneToMany(mappedBy = "doente", cascade = CascadeType.REMOVE)
+    private ArrayList<Observacao> observacoes;
+
     public Doente() {
         this.prescricoes = new ArrayList<>();
+        this.observacoes = new ArrayList<>();
     }
 
     public Doente(String name, String email, String password, int idade, double peso, double altura) {
@@ -41,6 +45,7 @@ public class Doente extends User {
         this.peso = peso;
         this.altura = altura;
         this.prescricoes = new ArrayList<>();
+        this.observacoes = new ArrayList<>();
     }
 
     public Prescricao adicionarPrescricao(Prescricao prescricao){
@@ -54,6 +59,20 @@ public class Doente extends User {
         return null;
     }
 
+
+    public Observacao adicionarObservacao(Observacao observacao){
+        System.out.println(observacoes);
+        System.out.println(observacao.getProfissionalDeSaude());
+        if(!observacoes.contains(observacao)){
+            observacoes.add(observacao);
+            return observacao;
+        }
+        return null;
+    }
+
+
+
+
     /*Getters*/
     public int getIdade() {
         return idade;
@@ -64,9 +83,11 @@ public class Doente extends User {
     public double getAltura() {
         return altura;
     }
-
     public ArrayList<Prescricao> getPrescricoes() {
         return prescricoes;
+    }
+    public ArrayList<Observacao> getObservacoes() {
+        return observacoes;
     }
 
     /*Setters*/
@@ -79,8 +100,10 @@ public class Doente extends User {
     public void setAltura(double altura) {
         this.altura = altura;
     }
-
     public void setPrescricoes(ArrayList<Prescricao> prescricoes) {
         this.prescricoes = prescricoes;
+    }
+    public void setObservacoes(ArrayList<Observacao> observacoes) {
+        this.observacoes = observacoes;
     }
 }

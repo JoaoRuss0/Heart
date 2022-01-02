@@ -16,13 +16,18 @@ public class ProfissionalDeSaude extends User{
         @OneToMany(mappedBy = "profissionalDeSaude", cascade = CascadeType.REMOVE)
         private ArrayList<Prescricao> prescricoes;
 
+        @OneToMany(mappedBy = "profissionalDeSaude", cascade = CascadeType.REMOVE)
+        private ArrayList<Observacao> observacoes;
+
         public ProfissionalDeSaude() {
                 this.prescricoes = new ArrayList<>();
+                this.observacoes = new ArrayList<>();
         }
 
         public ProfissionalDeSaude(String name, String email, String password) {
                 super(name, email, password);
                 this.prescricoes = new ArrayList<>();
+                this.observacoes = new ArrayList<>();
         }
 
         public ArrayList<Prescricao> getPrescricoes() {
@@ -42,5 +47,23 @@ public class ProfissionalDeSaude extends User{
 
         public void setPrescricoes(ArrayList<Prescricao> prescricoes) {
                 this.prescricoes = prescricoes;
+        }
+
+
+        public Observacao adicionarObservacao(Observacao observacao){
+                System.out.println(observacoes);
+                System.out.println(observacao.getProfissionalDeSaude());
+                if(!observacoes.contains(observacao)){
+                        observacoes.add(observacao);
+                        return observacao;
+                }
+                return null;
+        }
+
+        public ArrayList<Observacao> getObservacoes() {
+                return observacoes;
+        }
+        public void setObservacoes(ArrayList<Observacao> observacoes) {
+                this.observacoes = observacoes;
         }
 }
