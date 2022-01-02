@@ -67,7 +67,7 @@ public class DoenteBean {
         return entityManager.createNamedQuery("getAllDoentes", Doente.class).getResultList();
     }
 
-    private Doente findOrFail(String email) throws MyEntityNotFoundException {
+    public Doente findOrFail(String email) throws MyEntityNotFoundException {
         Doente doente = find(email);
 
         if(doente == null){

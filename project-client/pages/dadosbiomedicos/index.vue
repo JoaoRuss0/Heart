@@ -1,5 +1,5 @@
 <template>
-    <div v-if="this.$auth.user.groups[0] != 'Doente'">
+    <div>
     <b-container>
         <h1>Lista de Dados Biomedicos:</h1>
         <template v-if="dados.length > 0">
@@ -43,13 +43,16 @@
 
     </b-container>
     </div>
-    <div v-else><h1>Sem acesso a esta página</h1></div>
+
 </template>
 
 
 
 <script>
+import dadosBiomedicosRoutes from "../../middleware/dadosBiomedicosRoutes";
+
 export default {
+    middleware:dadosBiomedicosRoutes,
     data() {
         return {
             dados: [],

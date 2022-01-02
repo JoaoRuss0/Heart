@@ -59,7 +59,7 @@ public class ProfissionalDeSaudeBean {
         return email;
     }
 
-    private ProfissionalDeSaude findOrFail(String email) throws MyEntityNotFoundException {
+    public ProfissionalDeSaude findOrFail(String email) throws MyEntityNotFoundException {
         ProfissionalDeSaude profissionalDeSaude = find(email);
 
         if(profissionalDeSaude == null){

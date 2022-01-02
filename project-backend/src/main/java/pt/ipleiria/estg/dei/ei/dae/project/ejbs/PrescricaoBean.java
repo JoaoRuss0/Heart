@@ -2,6 +2,8 @@ package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
+import pt.ipleiria.estg.dei.ei.dae.project.ws.UserService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -25,18 +27,26 @@ public class PrescricaoBean {
     @EJB
     DoenteBean doenteBean;
 
-    public Prescricao create(String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) throws Exception {
-        Doente doente = doenteBean.find(doenteEmail);
+    @EJB
+    ProfissionalDeSaudeBean profissionalDeSaudeBean;
 
-        if(doente == null){
-            throw  new NotFoundException("Doente with email " + doenteEmail + " does not exist.");
-        }
+    public Prescricao create(String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao, String profissionalDeSaudeEmail) throws Exception {
 
 
-        Prescricao prescricao = new Prescricao(causa, stringToGregorian(dataInicio), stringToGregorian(dataFinal), tipoPrescricao, doente);
 
-        doente.adicionarPrescricao(prescricao);
+        Doente doente = doenteBean.findOrFail(doenteEmail);
+        ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.findOrFail(profissionalDeSaudeEmail);
+
+        Prescricao prescricao = new Prescricao(causa, stringToGregorian(dataInicio), stringToGregorian(dataFinal), tipoPrescricao, doente, profissionalDeSaude);
+
+
+        System.out.println(profissionalDeSaude);
+        System.out.println(doente);
+
         entityManager.persist(prescricao);
+        doente.adicionarPrescricao(prescricao);
+        profissionalDeSaude.adicionarPrescricao(prescricao);
+
 
         return prescricao;
     }

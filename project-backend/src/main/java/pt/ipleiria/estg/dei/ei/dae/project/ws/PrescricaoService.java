@@ -4,8 +4,10 @@ import pt.ipleiria.estg.dei.ei.dae.project.dtos.DoenteDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.PrescricaoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.PrescricaoBean;
+import pt.ipleiria.estg.dei.ei.dae.project.ejbs.ProfissionalDeSaudeBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
@@ -36,13 +38,22 @@ public class PrescricaoService {
     @EJB
     DoenteBean doenteBean;
 
+    @EJB
+    ProfissionalDeSaudeBean profissionalDeSaudeBean;
+
     @GET
     @Path("/")
-    public Response getAll()
-    {
+    public Response getAll() throws MyEntityNotFoundException {
+
         Principal principal = securityContext.getUserPrincipal();
+
+
         if((securityContext.isUserInRole("Doente"))){
-           return Response.ok(toDTOs(doenteBean.find(principal.getName()).getPrescricoes())).build();
+           return Response.ok(toDTOs(doenteBean.findOrFail(principal.getName()).getPrescricoes())).build();
+        }
+        if((securityContext.isUserInRole("ProfissionalDeSaude"))){
+
+            return Response.ok(toDTOs(profissionalDeSaudeBean.findOrFail(principal.getName()).getPrescricoes())).build();
         }
         return Response.ok(toDTOs(prescricaoBean.getAll())).build();
     }
@@ -58,7 +69,8 @@ public class PrescricaoService {
                 prescricao.getDoente().getEmail(),
                 prescricao.getDataInicio(),
                 prescricao.getDataFinal(),
-                prescricao.getTipoPrescricao()
+                prescricao.getTipoPrescricao(),
+                prescricao.getProfissionalDeSaude()
         );
 
 
@@ -69,12 +81,15 @@ public class PrescricaoService {
     @Path("/")
     public Response createNewPrescricao(PrescricaoDTO prescricaoDTO) throws Exception {
         logger.log(Level.SEVERE, prescricaoDTO.getDoenteEmail() + prescricaoDTO.getCausa());
+
+
     Prescricao prescricao = prescricaoBean.create(
             prescricaoDTO.getCausa(),
             prescricaoDTO.getDoenteEmail(),
             prescricaoDTO.getDataInicio(),
             prescricaoDTO.getDataFinal(),
-            prescricaoDTO.getTipoPrescricao()
+            prescricaoDTO.getTipoPrescricao(),
+            securityContext.getUserPrincipal().getName()
     );
     return Response.status(Response.Status.CREATED).entity(toDTOPrescricao(prescricao)).build();
 

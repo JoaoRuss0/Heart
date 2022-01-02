@@ -42,6 +42,7 @@
                     :state="stateEmail"
                     required/>
             </b-form-group>
+
             <div>
                 <label >Data Inicio</label>
                 <b-form-datepicker id="dataInicial" v-model="prescricao.dataInicio" class="mb-2"></b-form-datepicker>

@@ -1,6 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -14,18 +15,19 @@ public class PrescricaoDTO implements Serializable {
     private String dataInicio;
     private String dataFinal;
     private Prescricao.tipoPrescricao tipoPrescricao;
+    private String profissionalDeSaudeEmail;
 
     public PrescricaoDTO() {
-
     }
 
-    public PrescricaoDTO(int id, String causa, String doenteEmail, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao) {
+    public PrescricaoDTO(int id, String causa, String doenteEmail, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao, ProfissionalDeSaude profissionalDeSaude) {
         this.id = id;
         this.causa = causa;
         this.doenteEmail = doenteEmail;
         this.dataInicio = gregorianToString(dataInicio);
         this.dataFinal = gregorianToString(dataFinal);
         this.tipoPrescricao = tipoPrescricao;
+        this.profissionalDeSaudeEmail = profissionalDeSaude.getEmail();
     }
 
     public PrescricaoDTO( String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) {
@@ -47,7 +49,9 @@ public class PrescricaoDTO implements Serializable {
         return causa;
     }
 
-
+    public String getProfissionalDeSaudeEmail() {
+        return profissionalDeSaudeEmail;
+    }
 
     /*Setters*/
 
@@ -89,6 +93,10 @@ public class PrescricaoDTO implements Serializable {
 
     public void setTipoPrescricao(Prescricao.tipoPrescricao tipoPrescricao) {
         this.tipoPrescricao = tipoPrescricao;
+    }
+
+    public void setProfissionalDeSaudeEmail(String profissionalDeSaudeEmail) {
+        this.profissionalDeSaudeEmail = profissionalDeSaudeEmail;
     }
 
     private static String gregorianToString(GregorianCalendar calendar) {

@@ -129,7 +129,8 @@ public class DoenteService {
                 prescricao.getDoente().getEmail(),
                 prescricao.getDataInicio(),
                 prescricao.getDataFinal(),
-                prescricao.getTipoPrescricao()
+                prescricao.getTipoPrescricao(),
+                prescricao.getProfissionalDeSaude()
         );
     }
 }
