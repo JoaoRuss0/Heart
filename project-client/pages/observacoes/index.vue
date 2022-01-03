@@ -29,15 +29,17 @@
             </template>
             <b-row :no-gutters="true">
                 <b-col class="text-left">
-                    <b-button variant="success" @click="pushRoute(`/observacoes/create/`)">Criar Observação</b-button>
+                    <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude' " variant="success" @click="pushRoute(`/observacoes/create/`)">Criar Observação</b-button>
                 </b-col>
             </b-row>
             <template v-if="observacoes.length > 0">
                 <b-col class="text-right">
 
-                    <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteObs()">Apagar</b-button>
+                        <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="success" @click="pushRoute(`/prescricoes/observacoes/${selectedRow[0].id}/create`)">Criar Prescrição</b-button>
+
+                    <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude' " variant="danger" :disabled="selectedRow.length == 0" @click="deleteObs()">Apagar</b-button>
                     <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/observacoes/${selectedRow[0].id}`)">Detalhes</b-button>
-                    <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/observacoes/${selectedRow[0].id}/update`)">Atualizar</b-button>
+                    <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/observacoes/${selectedRow[0].id}/update`)">Atualizar</b-button>
                 </b-col>
             </template>
 
@@ -55,7 +57,7 @@ export default {
     data() {
         return {
             observacoes: [],
-            fields: ["doenteEmail", "profissionalDeSaudeEmail", "nomeDadoBiomedico", "data", "valorQuantitativo", "valorQualitativo"],
+            fields: ["id","doenteEmail", "profissionalDeSaudeEmail", "nomeDadoBiomedico", "data", "valorQuantitativo", "valorQualitativo"],
             selectedRow:[],
         }
     },
@@ -75,7 +77,11 @@ export default {
 
         deleteObs() {
             this.$axios.$delete(`/api/observacoes/${this.selectedRow[0].id}`).then(response => {
-                this.$router.go()
+            this.$toast.success("A observação foi apagada com sucesso!")
+                this.$axios.$get('/api/observacoes').then(observacoes => {
+                    this.observacoes = []
+                    this.observacoes.push(...observacoes)
+                })
             }).catch(error => console.log(error))
         }
 

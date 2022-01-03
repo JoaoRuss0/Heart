@@ -52,12 +52,13 @@ public class ConfigBean {
             dadoBiomedicoBean.create("Peso", "Peso do doente", 500.0, 1.0, "kg", Arrays.asList("Gordo","Magro","Obeso","Normal"));
             dadoBiomedicoBean.create("Idade", "Idade do doente", 140.0, 0.0, "years", Arrays.asList("Bebé","Criança","Adulto","Idoso"));
 
-            prescricaoBean.create("Autismo de Pedro", "p.p@p.p","2021-12-21","2021-12-22",Prescricao.tipoPrescricao.prescricaoMedica, "t.t@t.t");
+
 
             observacaoBean.create("p.p@p.p","f.f@f.f", "Altura", "2021-12-22", 180,"Alto");
             observacaoBean.create("p.p@p.p","f.f@f.f", "Idade", "2021-12-2", 10,"Bebé");
             observacaoBean.create("r.r@r.r","t.t@t.t", "Peso", "2021-2-2", 80,"Magro");
 
+            prescricaoBean.create("Autismo de Pedro", "p.p@p.p","2021-12-21","2021-12-22",Prescricao.tipoPrescricao.prescricaoMedica, "t.t@t.t", 2);
 
 
         }

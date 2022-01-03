@@ -23,13 +23,7 @@
                     <b-col><strong>Valor Qualitativo:</strong></b-col> <b-col>{{ observacao['valorQualitativo'] }}</b-col>
                 </b-row>
 
-                <b-row class="mb-3">
-                    <b-col>
-                        <nuxt-link to="/observacoes">
-                            <button class="btn btn-warning">Return</button>
-                        </nuxt-link>
-                    </b-col>
-                </b-row>
+
             </div>
         </b-container>
 </template>

@@ -1,5 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -13,11 +15,12 @@ public class ObservacaoDTO implements Serializable {
     private String data;
     private int valorQuantitativo;
     private String valorQualitativo;
+    private int prescricaoID;
 
     public ObservacaoDTO() {
     }
 
-    public ObservacaoDTO(int id, String doenteEmail, String profissionalDeSaudeEmail, String nomeDadoBiomedico, GregorianCalendar data, int valorQuantitativo, String valorQualitativo) {
+    public ObservacaoDTO(int id, String doenteEmail, String profissionalDeSaudeEmail, String nomeDadoBiomedico, GregorianCalendar data, int valorQuantitativo, String valorQualitativo, Prescricao prescricao) {
         this.id = id;
         this.doenteEmail = doenteEmail;
         this.profissionalDeSaudeEmail = profissionalDeSaudeEmail;
@@ -25,6 +28,8 @@ public class ObservacaoDTO implements Serializable {
         this.data = gregorianToString(data);
         this.valorQuantitativo = valorQuantitativo;
         this.valorQualitativo = valorQualitativo;
+
+        this.prescricaoID = (prescricao==null)? 0 : prescricao.getId();
     }
 
 
@@ -51,6 +56,10 @@ public class ObservacaoDTO implements Serializable {
         return valorQualitativo;
     }
 
+    public int getPrescricaoID() {
+        return prescricaoID;
+    }
+
     /*Setters*/
     public void setId(int id) {
         this.id = id;
@@ -74,6 +83,9 @@ public class ObservacaoDTO implements Serializable {
         this.valorQualitativo = valorQualitativo;
     }
 
+    public void setPrescricaoID(int prescricaoID) {
+        this.prescricaoID = prescricaoID;
+    }
 
     private static String gregorianToString(GregorianCalendar calendar) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-mm-dd");

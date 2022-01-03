@@ -47,14 +47,24 @@ public class Prescricao {
     @JoinColumn(name = "PROFISSIONAL")
     private ProfissionalDeSaude profissionalDeSaude;
 
-    public Prescricao(String causa, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao, Doente doente, ProfissionalDeSaude profissionalDeSaude) {
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "OBSERVACAO_ID")
+    private Observacao observacao;
+
+
+    public Prescricao(String causa, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao, Doente doente, ProfissionalDeSaude profissionalDeSaude, Observacao observacao) {
         this.causa = causa;
         this.dataInicio = dataInicio;
         this.dataFinal = dataFinal;
         this.tipoPrescricao = tipoPrescricao;
         this.doente = doente;
         this.profissionalDeSaude = profissionalDeSaude;
+        this.observacao = observacao;
+
     }
+
+
 
     public Prescricao() {
     }
@@ -70,6 +80,10 @@ public class Prescricao {
 
     public String getCausa() {
         return causa;
+    }
+
+    public Observacao getObservacao() {
+        return observacao;
     }
 
     public void setCausa(String causa) {
@@ -114,5 +128,9 @@ public class Prescricao {
 
     public void setTipoPrescricao(Prescricao.tipoPrescricao tipoPrescricao) {
         this.tipoPrescricao = tipoPrescricao;
+    }
+
+    public void setObservacao(Observacao observacao) {
+        this.observacao = observacao;
     }
 }

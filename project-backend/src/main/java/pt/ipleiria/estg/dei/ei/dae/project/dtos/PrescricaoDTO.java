@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Observacao;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
 
@@ -16,11 +17,12 @@ public class PrescricaoDTO implements Serializable {
     private String dataFinal;
     private Prescricao.tipoPrescricao tipoPrescricao;
     private String profissionalDeSaudeEmail;
+    private int observacaoID;
 
     public PrescricaoDTO() {
     }
 
-    public PrescricaoDTO(int id, String causa, String doenteEmail, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao, ProfissionalDeSaude profissionalDeSaude) {
+    public PrescricaoDTO(int id, String causa, String doenteEmail, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao, ProfissionalDeSaude profissionalDeSaude, Observacao observacao) {
         this.id = id;
         this.causa = causa;
         this.doenteEmail = doenteEmail;
@@ -28,14 +30,16 @@ public class PrescricaoDTO implements Serializable {
         this.dataFinal = gregorianToString(dataFinal);
         this.tipoPrescricao = tipoPrescricao;
         this.profissionalDeSaudeEmail = profissionalDeSaude.getEmail();
+        this.observacaoID = observacao.getId();
     }
 
-    public PrescricaoDTO( String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) {
+    public PrescricaoDTO( String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao, int observacaoID) {
         this.causa = causa;
         this.doenteEmail = doenteEmail;
         this.dataInicio = dataInicio;
         this.dataFinal = dataFinal;
         this.tipoPrescricao = tipoPrescricao;
+        this.observacaoID = observacaoID;
 
     }
 
@@ -53,6 +57,9 @@ public class PrescricaoDTO implements Serializable {
         return profissionalDeSaudeEmail;
     }
 
+    public int getObservacaoID() {
+        return observacaoID;
+    }
     /*Setters*/
 
     public void setId(int id) {
@@ -97,6 +104,10 @@ public class PrescricaoDTO implements Serializable {
 
     public void setProfissionalDeSaudeEmail(String profissionalDeSaudeEmail) {
         this.profissionalDeSaudeEmail = profissionalDeSaudeEmail;
+    }
+
+    public void setObservacaoID(int observacaoID) {
+        this.observacaoID = observacaoID;
     }
 
     private static String gregorianToString(GregorianCalendar calendar) {

@@ -1,6 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Observacao;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
@@ -31,14 +32,19 @@ public class PrescricaoBean {
     @EJB
     ProfissionalDeSaudeBean profissionalDeSaudeBean;
 
-    public Prescricao create(String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao, String profissionalDeSaudeEmail) throws Exception {
+    @EJB
+    ObservacaoBean observacaoBean;
+
+    public Prescricao create(String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao, String profissionalDeSaudeEmail, int observacaoID) throws Exception {
 
 
 
         Doente doente = doenteBean.findOrFail(doenteEmail);
         ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.findOrFail(profissionalDeSaudeEmail);
+        Observacao observacao =observacaoBean.findOrFail(observacaoID);
 
-        Prescricao prescricao = new Prescricao(causa, stringToGregorian(dataInicio), stringToGregorian(dataFinal), tipoPrescricao, doente, profissionalDeSaude);
+
+        Prescricao prescricao = new Prescricao(causa, stringToGregorian(dataInicio), stringToGregorian(dataFinal), tipoPrescricao, doente, profissionalDeSaude, observacao);
 
 
         System.out.println(profissionalDeSaude);
@@ -47,6 +53,7 @@ public class PrescricaoBean {
         entityManager.persist(prescricao);
         doente.adicionarPrescricao(prescricao);
         profissionalDeSaude.adicionarPrescricao(prescricao);
+        //observacao.setPrescricao(prescricao);
 
 
         return prescricao;
@@ -83,7 +90,11 @@ public class PrescricaoBean {
 
     public void deletePrescricao(int id) throws Exception {
         Prescricao prescricao = this.findOrFail(id);
+        prescricao.getDoente().removerPrescricao(prescricao);
+        prescricao.getProfissionalDeSaude().removerPrescricao(prescricao);
         entityManager.remove(prescricao);
+
+
     }
 
     private GregorianCalendar stringToGregorian(String data) throws ParseException {

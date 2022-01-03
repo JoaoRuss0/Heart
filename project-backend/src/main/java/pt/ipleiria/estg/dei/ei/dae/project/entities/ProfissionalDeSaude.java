@@ -60,6 +60,23 @@ public class ProfissionalDeSaude extends User{
                 return null;
         }
 
+        public Prescricao removerPrescricao(Prescricao prescricao){
+                if(prescricoes.contains(prescricao)){
+                        prescricoes.remove(prescricao);
+                        return prescricao;
+                }
+
+                return null;
+        }
+
+        public Observacao removerObservacao(Observacao observacao){
+                if(observacoes.contains(observacao)){
+                        observacoes.remove(observacao);
+                        return observacao;
+                }
+
+                return null;
+        }
         public ArrayList<Observacao> getObservacoes() {
                 return observacoes;
         }

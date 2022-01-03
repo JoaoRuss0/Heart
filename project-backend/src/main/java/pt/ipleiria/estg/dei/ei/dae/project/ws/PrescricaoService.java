@@ -70,7 +70,8 @@ public class PrescricaoService {
                 prescricao.getDataInicio(),
                 prescricao.getDataFinal(),
                 prescricao.getTipoPrescricao(),
-                prescricao.getProfissionalDeSaude()
+                prescricao.getProfissionalDeSaude(),
+                prescricao.getObservacao()
         );
 
 
@@ -80,8 +81,9 @@ public class PrescricaoService {
     @POST
     @Path("/")
     public Response createNewPrescricao(PrescricaoDTO prescricaoDTO) throws Exception {
-        logger.log(Level.SEVERE, prescricaoDTO.getDoenteEmail() + prescricaoDTO.getCausa());
 
+
+        System.out.println(prescricaoDTO.getObservacaoID());
 
     Prescricao prescricao = prescricaoBean.create(
             prescricaoDTO.getCausa(),
@@ -89,7 +91,8 @@ public class PrescricaoService {
             prescricaoDTO.getDataInicio(),
             prescricaoDTO.getDataFinal(),
             prescricaoDTO.getTipoPrescricao(),
-            securityContext.getUserPrincipal().getName()
+            securityContext.getUserPrincipal().getName(),
+            prescricaoDTO.getObservacaoID()
     );
     return Response.status(Response.Status.CREATED).entity(toDTOPrescricao(prescricao)).build();
 

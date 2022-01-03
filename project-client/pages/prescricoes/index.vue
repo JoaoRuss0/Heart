@@ -15,7 +15,7 @@
                     @row-selected="onRowSelected"
                     :items="prescricoes"
                     :fields="fields"
-                    :busy="usersLoading"
+                    :busy="prescricoesLoading"
                 >
                     <template #table-busy>
                         <spinner />
@@ -27,14 +27,11 @@
             <p class="text-danger">Não há prescrições para listar</p>
         </template>
         <b-row :no-gutters="true">
-            <b-col class="text-left">
-                <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="success" @click="pushRoute(`/prescricoes/create/`)">Criar Prescrição</b-button>
-            </b-col>
              <template v-if="prescricoes.length > 0">
                  <b-col class="text-right">
                     <b-button  variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
                      <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
-                     <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="danger" :disabled="selectedRow.length == 0"  @click="deleteUser()">Delete</b-button>
+                     <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="danger" :disabled="selectedRow.length == 0"  @click="deletePrescricoes()">Delete</b-button>
                  </b-col>
              </template>
         </b-row>
@@ -47,13 +44,15 @@ export default {
     data() {
         return {
             prescricoes: [],
-            fields: ["id", "causa", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao", "profissionalDeSaudeEmail"],
-            selectedRow: []
+            fields: ["id", "causa", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao", "profissionalDeSaudeEmail", "observacaoID"],
+            selectedRow: [],
+            prescricoesLoading: true
         }
     },
     created() {
         this.$axios.$get('/api/prescricoes').then(prescricoes => {
             this.prescricoes = prescricoes
+            this.prescricoesLoading= false
         })
     },
     methods: {
@@ -63,10 +62,14 @@ export default {
         pushRoute(route) {
             this.$router.push(route)
         },
-        deleteUser() {
+        deletePrescricoes() {
+
             this.$axios.$delete(`/api/prescricoes/${this.selectedRow[0].id}`).then(response => {
-                console.log(response)
-                this.$router.go()
+                this.$toast.success("A prescrição foi apagada com sucesso!")
+                this.$axios.$get('/api/prescricoes').then(prescricoes => {
+                    this.prescricoes = []
+                    this.prescricoes.push(...prescricoes)
+                })
             }).catch(error => console.log(error))
         },
     }

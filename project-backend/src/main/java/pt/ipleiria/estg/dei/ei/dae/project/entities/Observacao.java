@@ -40,6 +40,12 @@ public class Observacao {
     @NotNull
     private String valorQualitativo;
 
+
+    @OneToOne
+    @JoinColumn(name = "PRESCRICAO_ID")
+    private Prescricao prescricao;
+
+
     public Observacao() {
 
     }
@@ -51,6 +57,7 @@ public class Observacao {
         this.data = data;
         this.valorQuantitativo = valorQuantitativo;
         this.valorQualitativo = valorQualitativo;
+        this.prescricao = null;
     }
 
     /*Getters*/
@@ -76,6 +83,9 @@ public class Observacao {
         return valorQualitativo;
     }
 
+    public Prescricao getPrescricao() {
+        return prescricao;
+    }
 
     /*Setters*/
     public void setId(int id) {
@@ -98,5 +108,9 @@ public class Observacao {
     }
     public void setValorQualitativo(String valorQualitativo) {
         this.valorQualitativo = valorQualitativo;
+    }
+
+    public void setPrescricao(Prescricao prescricao) {
+        this.prescricao = prescricao;
     }
 }

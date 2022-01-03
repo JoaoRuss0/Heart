@@ -117,6 +117,7 @@ public class ObservacaoService {
     }
 
     private ObservacaoDTO toDTOObservacao(Observacao observacao) {
+        System.out.println(observacao.getPrescricao());
         return new ObservacaoDTO(
                 observacao.getId(),
                 observacao.getDoente().getEmail(),
@@ -124,7 +125,8 @@ public class ObservacaoService {
                 observacao.getNomeDadoBiomedico(),
                 observacao.getData(),
                 observacao.getValorQuantitativo(),
-                observacao.getValorQualitativo()
+                observacao.getValorQualitativo(),
+                observacao.getPrescricao()
         );
     }
 

@@ -39,7 +39,8 @@ public class ObservacaoBean {
         return entityManager.createNamedQuery("getAllObservacoes", Observacao.class).getResultList();
     }
 
-    public Observacao create(String doenteEmail, String profissionalDeSaudeEmail, String nomeDadoBiomedico, String data, int valorQuantitativo, String valorQualitativo) throws MyEntityNotFoundException, ParseException, MyValueNotFoundException, MyValueOutOfBoundsException {
+    public Observacao create(String doenteEmail, String profissionalDeSaudeEmail, String nomeDadoBiomedico, String data, int valorQuantitativo, String valorQualitativo
+    ) throws MyEntityNotFoundException, ParseException, MyValueNotFoundException, MyValueOutOfBoundsException {
 
         Doente doente = doenteBean.findOrFail(doenteEmail);
         ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.findOrFail(profissionalDeSaudeEmail);
@@ -58,12 +59,14 @@ public class ObservacaoBean {
         doente.adicionarObservacao(observacao);
         profissionalDeSaude.adicionarObservacao(observacao);
 
+
         return observacao;
     }
 
     public void delete(int id) throws Exception {
         Observacao observacao = this.findOrFail(id);
-
+        observacao.getDoente().removerObservacao(observacao);
+        observacao.getProfissionalDeSaude().removerObservacao(observacao);
         entityManager.remove(observacao);
     }
 
@@ -95,7 +98,7 @@ public class ObservacaoBean {
         Observacao observacao = find(id);
 
         if(observacao == null){
-            throw new MyEntityNotFoundException("Prescricao with id = '" + id + "' not found.");
+            throw new MyEntityNotFoundException("Observacao with id = '" + id + "' not found.");
         }
 
         return observacao;

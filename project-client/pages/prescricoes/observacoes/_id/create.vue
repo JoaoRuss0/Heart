@@ -8,7 +8,20 @@
                 <option value="prescricaoMedica">Prescrição Médica</option>
                 <option value="prescricaoNutricao">Prescrição Nutrição</option>
             </select>
+            <b-form-group
+                id="inputCausaGroup"
+                label="Observacao ID"
+                label-for="inputObservacaoID"
 
+            >
+                <b-input
+                    disabled
+                    id="inputObservacaoID"
+                    name="observacaoID"
+                    v-model.trim="prescricao.observacaoID"
+
+                    required/>
+            </b-form-group>
             <b-form-group
                 id="inputCausaGroup"
                 label="Causa"
@@ -18,7 +31,7 @@
             >
                 <b-input
                     id="inputCausa"
-                    ref="causa"
+
                     name="causa"
                     placeholder="A causa da prescrição"
                     v-model.trim="prescricao.causa"
@@ -70,7 +83,8 @@ export default {
             doenteEmail: null,
             dataInicio: null,
             dataFinal: null,
-            tipoPrescricao: "prescricaoExercicioFisico"
+            tipoPrescricao: "prescricaoExercicioFisico",
+            observacaoID: null,
         }
         }
     },
@@ -109,12 +123,16 @@ export default {
     },
     methods: {
         create () {
+            this.prescricao.observacaoID=this.$route.params.id
             this.$axios
                 .$post('/api/prescricoes', this.prescricao)
                 .then(() => {
                     this.$router.push('/prescricoes')
                 })
         }
+    },
+    created(){
+        this.prescricao.observacaoID=this.$route.params.id;
     }
 }
 </script>

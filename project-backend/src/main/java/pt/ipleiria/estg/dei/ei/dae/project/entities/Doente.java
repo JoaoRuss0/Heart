@@ -49,11 +49,27 @@ public class Doente extends User {
     }
 
     public Prescricao adicionarPrescricao(Prescricao prescricao){
-        System.out.println(prescricoes);
-        System.out.println(prescricao.getProfissionalDeSaude());
+
         if(!prescricoes.contains(prescricao)){
             prescricoes.add(prescricao);
             return prescricao;
+        }
+
+        return null;
+    }
+
+    public Prescricao removerPrescricao(Prescricao prescricao){
+        if(prescricoes.contains(prescricao)){
+            prescricoes.remove(prescricao);
+            return prescricao;
+        }
+
+        return null;
+    }
+    public Observacao removerObservacao(Observacao observacao){
+        if(observacoes.contains(observacao)){
+            observacoes.remove(observacao);
+            return observacao;
         }
 
         return null;

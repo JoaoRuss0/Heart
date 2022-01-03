@@ -130,7 +130,8 @@ public class DoenteService {
                 prescricao.getDataInicio(),
                 prescricao.getDataFinal(),
                 prescricao.getTipoPrescricao(),
-                prescricao.getProfissionalDeSaude()
+                prescricao.getProfissionalDeSaude(),
+                prescricao.getObservacao()
         );
     }
 }

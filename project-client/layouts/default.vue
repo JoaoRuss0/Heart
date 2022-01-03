@@ -26,6 +26,26 @@
                                 <nuxt-link class="nav-link" to="/prescricoes">Prescrições Prescritas</nuxt-link>
                             </li>
                         </template>
+                        <template v-if="$store.state.auth.user.groups[0] == 'Doente'">
+                            <li class="nav-item">
+                                <nuxt-link class="nav-link" to="/observacoes">Minhas Observacoes</nuxt-link>
+                            </li>
+                        </template>
+                        <template v-if="$store.state.auth.user.groups[0] == 'ProfissionalDeSaude'">
+                            <li class="nav-item">
+                                <nuxt-link class="nav-link" to="/observacoes">Observacoes meus doentes</nuxt-link>
+                            </li>
+                        </template>
+                        <template v-if="$store.state.auth.user.groups[0] == 'Administrador'">
+                            <li class="nav-item">
+                                <nuxt-link class="nav-link" to="/observacoes">Todas as Observações</nuxt-link>
+                            </li>
+                        </template>
+                        <template v-if="$store.state.auth.user.groups[0] == 'Administrador'">
+                            <li class="nav-item">
+                                <nuxt-link class="nav-link" to="/prescricoes">Todas as Prescricoes</nuxt-link>
+                            </li>
+                        </template>
                     </template>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
