@@ -16,6 +16,16 @@
                                 <nuxt-link class="nav-link" to="/doentes">Doentes</nuxt-link>
                             </li>
                         </template>
+                        <template v-if="$store.state.auth.user.groups[0] == 'Doente'">
+                            <li class="nav-item">
+                                <nuxt-link class="nav-link" to="/prescricoes">Minhas Prescrições</nuxt-link>
+                            </li>
+                        </template>
+                        <template v-if="$store.state.auth.user.groups[0] == 'ProfissionalDeSaude'">
+                            <li class="nav-item">
+                                <nuxt-link class="nav-link" to="/prescricoes">Prescrições Prescritas</nuxt-link>
+                            </li>
+                        </template>
                     </template>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">

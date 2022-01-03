@@ -35,12 +35,6 @@
                 </b-row>
                 <b-row class="mb-3">
                     <b-col>
-                        <nuxt-link to="/prescricoes">
-                            <button class="btn btn-warning">Return</button>
-                        </nuxt-link>
-                    </b-col>
-                    <b-col>
-                        <button type="reset" class="btn btn-primary">RESET</button>
                         <button @click.prevent="update" class="btn btn-light">UPDATE</button>
                     </b-col>
                 </b-row>

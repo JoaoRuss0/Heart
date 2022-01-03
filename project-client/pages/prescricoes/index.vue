@@ -28,13 +28,13 @@
         </template>
         <b-row :no-gutters="true">
             <b-col class="text-left">
-                <b-button variant="success" @click="pushRoute(`/prescricoes/create/`)">Criar Prescrição</b-button>
+                <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="success" @click="pushRoute(`/prescricoes/create/`)">Criar Prescrição</b-button>
             </b-col>
              <template v-if="prescricoes.length > 0">
                  <b-col class="text-right">
-                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
-                     <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
-                     <b-button variant="danger" :disabled="selectedRow.length == 0"  @click="deleteUser()">Delete</b-button>
+                    <b-button  variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
+                     <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
+                     <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="danger" :disabled="selectedRow.length == 0"  @click="deleteUser()">Delete</b-button>
                  </b-col>
              </template>
         </b-row>
@@ -47,7 +47,7 @@ export default {
     data() {
         return {
             prescricoes: [],
-            fields: ["id", "causa", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao"],
+            fields: ["id", "causa", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao", "profissionalDeSaudeEmail"],
             selectedRow: []
         }
     },
