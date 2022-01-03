@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.project.ws;
 
 
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.ObservacaoDTO;
+import pt.ipleiria.estg.dei.ei.dae.project.dtos.PrescricaoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.ObservacaoBean;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.ProfissionalDeSaudeBean;
@@ -56,12 +57,13 @@ public class ObservacaoService {
 
             return Response.ok(toDTOs(profissionalDeSaudeBean.findOrFail(principal.getName()).getObservacoes())).build();
         }
+
         return Response.ok(toDTOs(observacaoBean.getAll())).build();
     }
 
     @POST
     @Path("/")
-    public Response createNewPrescricao(ObservacaoDTO observacaoDTO) throws MyEntityNotFoundException, ParseException, MyValueNotFoundException, MyValueOutOfBoundsException {
+    public Response createNewObservacao(ObservacaoDTO observacaoDTO) throws MyEntityNotFoundException, ParseException, MyValueNotFoundException, MyValueOutOfBoundsException {
 
         Observacao observacao = observacaoBean.create(
                 observacaoDTO.getDoenteEmail(),
@@ -88,13 +90,25 @@ public class ObservacaoService {
 
     @GET
     @Path("/{id}")
-    public Response getDadoBiomedico(@PathParam("id") int id) throws MyEntityNotFoundException {
+    public Response getObservacao(@PathParam("id") int id) throws MyEntityNotFoundException {
         Observacao observacao = observacaoBean.findOrFail(id);
 
         return Response.ok(toDTOObservacao(observacao)).build();
     }
 
 
+    @PUT
+    @Path("/{id}/update")
+    public Response updatePrescricao(@PathParam("id") int id, ObservacaoDTO observacaoDTO) throws Exception {
+        Observacao observacao = observacaoBean.find(id);
+
+        if(observacao == null) {
+            throw new NotFoundException("Course with id " + id + " does not exist!");
+        }
+
+        observacao = observacaoBean.updateObservacao(observacao, observacaoDTO);
+        return Response.ok(toDTOObservacao(observacao)).build();
+    }
 
 
 
@@ -106,16 +120,12 @@ public class ObservacaoService {
         return new ObservacaoDTO(
                 observacao.getId(),
                 observacao.getDoente().getEmail(),
-                observacao.getProfissionalDeSaude().getName(),
+                observacao.getProfissionalDeSaude().getEmail(),
                 observacao.getNomeDadoBiomedico(),
                 observacao.getData(),
                 observacao.getValorQuantitativo(),
                 observacao.getValorQualitativo()
-
         );
-
-
-
     }
 
 }

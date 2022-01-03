@@ -56,6 +56,7 @@ public class ConfigBean {
 
             observacaoBean.create("p.p@p.p","f.f@f.f", "Altura", "2021-12-22", 180,"Alto");
             observacaoBean.create("p.p@p.p","f.f@f.f", "Idade", "2021-12-2", 10,"Bebé");
+            observacaoBean.create("r.r@r.r","t.t@t.t", "Peso", "2021-2-2", 80,"Magro");
 
 
 

@@ -53,6 +53,7 @@ public class DadoBiomedicoBean {
     }
 
     public DadoBiomedico update(DadoBiomedico dado, DadoBiomedicoDTO dadoBiomedicoDTO) {
+
         dado.setNome(dadoBiomedicoDTO.getNome());
         dado.setDescricao(dadoBiomedicoDTO.getDescricao());
         dado.setMinimo(dadoBiomedicoDTO.getMinimo());
