@@ -53,16 +53,16 @@ public class PrescricaoBean {
 
         doente.adicionarPrescricao(prescricao);
         profissionalDeSaude.adicionarPrescricao(prescricao);
-        //observacao.setPrescricao(prescricao);
+        observacao.setPrescricao(prescricao);
 
         return prescricao;
     }
 
-    public Prescricao updatePrescricao(int id, String comentario, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) throws MyParseException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Prescricao update(int id, String comentario, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) throws MyParseException, MyEntityNotFoundException, MyConstraintViolationException {
         Prescricao prescricao = findOrFail(id);
 
         try {
-            prescricao.setCausa(comentario);
+            prescricao.setComentario(comentario);
             prescricao.setTipoPrescricao(tipoPrescricao);
             prescricao.setDataInicio(stringToGregorian(dataInicio));
             prescricao.setDataFinal(stringToGregorian(dataFinal));
@@ -76,8 +76,9 @@ public class PrescricaoBean {
         return prescricao;
     }
 
-    public void deletePrescricao(int id) throws MyEntityNotFoundException {
+    public void delete(int id) throws MyEntityNotFoundException {
         Prescricao prescricao = findOrFail(id);
+        prescricao.getObservacao().setPrescricao(null);
         prescricao.getDoente().removerPrescricao(prescricao);
         prescricao.getProfissionalDeSaude().removerPrescricao(prescricao);
 

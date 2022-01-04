@@ -12,11 +12,8 @@ public class DadoBiomedicoDTO implements Serializable {
     private String unidadeMedida;
     private List<String> qualificadores;
 
-
-
     public DadoBiomedicoDTO() {
     }
-
 
     public DadoBiomedicoDTO(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) {
         this.nome = nome;

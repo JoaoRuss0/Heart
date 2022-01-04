@@ -2,11 +2,11 @@
     <b-container>
         <h1>Current users:</h1>
 
-        <template v-if="users.length == 0 && usersLoading == false">
-            <p class="text-danger">No observações to show.</p>
-        </template>
-        <template v-else>
-            <b-row :no-gutters="true">
+        <b-row :no-gutters="true">
+            <template v-if="users.length == 0 && usersLoading == false">
+                <p class="text-danger">No observações to show.</p>
+            </template>
+            <template v-else>
                 <b-table
                     hover
                     bordered
@@ -25,29 +25,29 @@
                         <Spinner />
                     </template>
                 </b-table>
-            </b-row>
+            </template>
+        </b-row>
 
-            <b-row :no-gutters="true">
-                <b-col class="text-left">
-                    <b-button variant="success" @click="pushRoute('create', null)">Create</b-button>
-                </b-col>
-                <b-col class="text-right">
-                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute('view', selectedRow[0])">Details</b-button>
-                    <b-button variant="warning" :disabled="selectedRow.length == 0 || selectedRow[0].tipo == 'Doente'" @click="pushRoute('update', selectedRow[0])">Update</b-button>
-                    <b-button variant="danger"  :disabled="selectedRow.length == 0 || selectedRow[0].tipo == 'Doente'" @click="deleteUser(selectedRow[0])">Delete</b-button>
-                </b-col>
-            </b-row>
-        </template>
+        <b-row :no-gutters="true">
+            <b-col class="text-left">
+                <b-button variant="success" @click="pushRoute('create', null)">Create</b-button>
+            </b-col>
+            <b-col class="text-right">
+                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute('view', selectedRow[0])">Details</b-button>
+                <b-button variant="warning" :disabled="selectedRow.length == 0 || selectedRow[0].tipo == 'Doente'" @click="pushRoute('update', selectedRow[0])">Update</b-button>
+                <b-button variant="danger"  :disabled="selectedRow.length == 0 || selectedRow[0].tipo == 'Doente'" @click="deleteUser(selectedRow[0])">Delete</b-button>
+            </b-col>
+        </b-row>
     </b-container>
 </template>
 
 <script>
 import Spinner from "../../components/Spinner";
-import usersIndex from "../../middleware/usersIndex";
+import usersIndexPost from "../../middleware/usersIndexPost";
 
 export default {
     components: {Spinner},
-    middleware: usersIndex,
+    middleware: usersIndexPost,
     data() {
         return {
             users: [],
@@ -94,6 +94,7 @@ export default {
         },
         deleteUser(row) {
             this.$axios.$delete("/api/" + ((row.tipo == "Administrador") ? "administradores/" : "profissionaisdesaude/") + row.email).then(response => {
+                this.selectedRow = []
 
                 this.$toast.success("Successfully deleted " + row.tipo + " (" + row.email + ").")
 

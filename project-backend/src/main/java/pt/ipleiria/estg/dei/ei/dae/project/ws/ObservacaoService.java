@@ -47,20 +47,24 @@ public class ObservacaoService {
 
             return Response.ok(toDTOs(profissionalDeSaudeBean.findOrFail(principal.getName()).getObservacoes())).build();
         }
+        if((securityContext.isUserInRole("Administrador"))){
 
-        return Response.ok(toDTOs(observacaoBean.getAll())).build();
+            return Response.ok(toDTOs(observacaoBean.getAll())).build();
+        }
+
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET
     @Path("/{id}")
-    public Response getObservacao(@PathParam("id") int id) throws MyEntityNotFoundException {
+    public Response get(@PathParam("id") int id) throws MyEntityNotFoundException {
         Observacao observacao = observacaoBean.findOrFail(id);
         return Response.ok(toDTO(observacao)).build();
     }
 
     @POST
     @Path("/")
-    public Response createNewObservacao(ObservacaoDTO observacaoDTO) throws MyEntityNotFoundException, MyValueNotFoundException, MyValueOutOfBoundsException, MyConstraintViolationException, MyParseException {
+    public Response create(ObservacaoDTO observacaoDTO) throws MyEntityNotFoundException, MyValueNotFoundException, MyValueOutOfBoundsException, MyConstraintViolationException, MyParseException {
         Observacao observacao = observacaoBean.create(
                 observacaoDTO.getDoenteEmail(),
                 securityContext.getUserPrincipal().getName(),
@@ -70,19 +74,18 @@ public class ObservacaoService {
                 observacaoDTO.getValorQualitativo());
 
         return Response.status(Response.Status.CREATED).entity(toDTO(observacao)).build();
-
     }
 
     @PUT
     @Path("/{id}")
-    public Response updatePrescricao(@PathParam("id") int id, ObservacaoDTO observacaoDTO) throws Exception {
+    public Response update(@PathParam("id") int id, ObservacaoDTO observacaoDTO) throws Exception {
         observacaoBean.updateObservacao(id, observacaoDTO);
         return Response.ok(id).build();
     }
 
     @DELETE
     @Path("/{id}")
-    public Response deleteObservacao(@PathParam("id") int id) throws MyEntityExistsException, MyEntityNotFoundException {
+    public Response delete(@PathParam("id") int id) throws MyEntityExistsException, MyEntityNotFoundException {
         observacaoBean.delete(id);
 
         if (observacaoBean.find(id) != null) {

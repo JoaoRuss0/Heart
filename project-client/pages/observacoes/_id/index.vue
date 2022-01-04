@@ -1,35 +1,43 @@
 <template>
-        <b-container fluid="sm">
-            <div v-if="observacao">
-                <h1 class="mb-4 mt-4">
-                    Observação #{{ observacao['id'] }}
-                </h1>
-                <b-row class="mb-3">
-                    <b-col><strong>Email do Doente:</strong></b-col> <b-col>{{ observacao['doenteEmail'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Email do Profissional de Saúde:</strong></b-col> <b-col>{{ observacao['profissionalDeSaudeEmail'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Dado Biomédico:</strong></b-col> <b-col>{{ observacao['nomeDadoBiomedico'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Data:</strong></b-col> <b-col>{{ observacao['data'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Valor Quantitativo:</strong></b-col> <b-col>{{ observacao['valorQuantitativo'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Valor Qualitativo:</strong></b-col> <b-col>{{ observacao['valorQualitativo'] }}</b-col>
-                </b-row>
-
-
-            </div>
-        </b-container>
+    <b-container>
+        <h1>Observação details:</h1>
+        <template v-if="observacao != null">
+            <b-form-group id="fieldset-id" label="ID:">
+                <b-form-input :disabled="true" :value="observacao.id"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-doenteEmail" label="Doente's Email Address:">
+                <b-form-input :disabled="true" :value="observacao.doenteEmail"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-profissionalDeSaudeEmail" label="Profissional De Saude's Email Address:">
+                <b-form-input :disabled="true" :value="observacao.profissionalDeSaudeEmail"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-nomeDadoBiomedico" label="Dado Biomedico's Name:">
+                <b-form-input :disabled="true" :value="observacao.nomeDadoBiomedico"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-data" label="Date:">
+                <b-form-input :disabled="true" :value="observacao.data"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-valorQuantitativo" label="Quantitative Value:">
+                <b-form-input :disabled="true" :value="observacao.valorQuantitativo"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-valorQualitativo" label="Qualitative Value:">
+                <b-form-input :disabled="true" :value="observacao.valorQualitativo"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-prescricaoID" label="Prescrição ID:">
+                <b-form-input :disabled="true" :value="((observacao.prescricaoID == 0) ? 'No prescrição is associated with this observação.' : observacao.prescricaoID)"></b-form-input>
+            </b-form-group>
+        </template>
+        <template v-else>
+            <Spinner/>
+        </template>
+    </b-container>
 </template>
 
 <script>
+import Spinner from "../../../components/Spinner";
+
 export default {
+    components: {Spinner},
     data () {
         return {
             observacao: null,
@@ -38,6 +46,9 @@ export default {
     created () {
         this.$axios.$get('api/observacoes/' + this.$route.params.id).then((observacao) => {
             this.observacao = observacao
+        }).catch(error => {
+            this.$toast.error("Could not get observação (" + this.$route.params.id + ").")
+            this.$router.push("/observacoes")
         })
     },
 }

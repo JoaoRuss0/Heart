@@ -1,9 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -20,10 +19,15 @@ public class ProfissionalDeSaudeBean {
     @EJB
     UserBean userBean;
 
-    public ProfissionalDeSaude create(String name, String email, String password) throws MyConstraintViolationException, MyEntityExistsException {
+    public ProfissionalDeSaude create(String name, String email, String password) throws MyConstraintViolationException, MyEntityExistsException, MyPasswordTooShortException {
         if(userBean.find(email) != null)
         {
             throw new MyEntityExistsException("User with email = '" + email + "' already exists.");
+        }
+
+        if(password.length() < 8)
+        {
+            throw new MyPasswordTooShortException("Password has to be at least 8 in length.");
         }
 
         ProfissionalDeSaude profissionalDeSaude;
@@ -38,12 +42,24 @@ public class ProfissionalDeSaudeBean {
         return profissionalDeSaude;
     }
 
-    public ProfissionalDeSaude update(String name, String email) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public ProfissionalDeSaude update(String name, String email, String newpassword, String currentpassword) throws MyConstraintViolationException, MyEntityNotFoundException, MyPasswordTooShortException, MyIncorrectPasswordException {
         ProfissionalDeSaude profissionalDeSaude = findOrFail(email);
+
+        if(currentpassword != null && newpassword != null && (currentpassword.length() < 8 || newpassword.length() < 8))
+        {
+            throw new MyPasswordTooShortException("New or current password have to be at least 8 in length.");
+        }
 
         try {
             profissionalDeSaude.setName(name);
 
+            if(currentpassword != null && newpassword != null){
+                if(User.hashPassword(currentpassword).equals(profissionalDeSaude.getPassword())) {
+                    profissionalDeSaude.setPassword(User.hashPassword(newpassword));
+                }else{
+                    throw new MyIncorrectPasswordException("Current password is different from the provided current password.");
+                }
+            }
             entityManager.merge(profissionalDeSaude);
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);

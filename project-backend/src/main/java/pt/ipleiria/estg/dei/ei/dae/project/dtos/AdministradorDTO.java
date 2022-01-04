@@ -7,6 +7,8 @@ public class AdministradorDTO implements Serializable {
     private String email;
     private String name;
     private String password;
+    private String newpassword;
+    private String currentpassword;
 
     public AdministradorDTO() {
 
@@ -23,6 +25,13 @@ public class AdministradorDTO implements Serializable {
         this.password = password;
     }
 
+    public AdministradorDTO(String name, String email, String newpassword, String currentpassword) {
+        this.name = name;
+        this.email = email;
+        this.currentpassword = currentpassword;
+        this.newpassword = newpassword;
+    }
+
     /*Getters*/
     public String getName() {
         return name;
@@ -32,6 +41,12 @@ public class AdministradorDTO implements Serializable {
     }
     public String getPassword() {
         return password;
+    }
+    public String getNewpassword() {
+        return newpassword;
+    }
+    public String getCurrentpassword() {
+        return currentpassword;
     }
 
     /*Setters*/
@@ -44,5 +59,10 @@ public class AdministradorDTO implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    public void setNewpassword(String newpassword) {
+        this.newpassword = newpassword;
+    }
+    public void setCurrentpassword(String currentpassword) {
+        this.currentpassword = currentpassword;
+    }
 }

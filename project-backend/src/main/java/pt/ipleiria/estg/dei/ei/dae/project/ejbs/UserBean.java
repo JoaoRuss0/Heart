@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyLoginFailedException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -22,14 +23,14 @@ public class UserBean {
         return entityManager.createNamedQuery("getAllUsers", User.class).getResultList();
     }
 
-    public User authenticate(final String email, final String password) throws Exception {
+    public User authenticate(final String email, final String password) throws MyLoginFailedException {
         User user = entityManager.find(User.class, email);
 
         if (user != null && user.getPassword().equals(User.hashPassword(password))) {
             return user;
         }
 
-        throw new Exception("Failed logging in with email '" + email + "': unknown email or wrong password");
+        throw new MyLoginFailedException("Failed logging in with email '" + email + "': unknown email or wrong password");
     }
 
     public User findOrFail(String email) throws MyEntityNotFoundException {

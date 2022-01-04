@@ -1,16 +1,9 @@
 <template>
     <b-container>
         <h1>
-            Create new user
+            Create new doente:
         </h1>
         <b-form @submit.prevent="onSubmit" @reset.prevent="onReset" :disabled="!isFormValid">
-            <b-form-group
-                id="fieldset-user-type"
-                label="User Type:"
-                label-for="inputUserType"
-                >
-                <b-form-radio-group id="inputUserType" v-model="user.tipo" :options="options" />
-            </b-form-group>
             <b-form-group
                 id="fieldset-name"
                 label="Name:"
@@ -21,7 +14,7 @@
             >
                 <b-form-input
                     id="inputName"
-                    v-model="user.name"
+                    v-model="doente.name"
                     placeholder="Enter a name"
                     :state="stateName"
                     required
@@ -39,7 +32,7 @@
                     id="inputEmail"
                     type="email"
                     ref="email"
-                    v-model="user.email"
+                    v-model="doente.email"
                     placeholder="Enter an email address"
                     :state="stateEmail"
                     required
@@ -57,7 +50,7 @@
                     <b-form-input
                         id="inputPassword"
                         type="password"
-                        v-model="user.password"
+                        v-model="doente.password"
                         placeholder="Enter a password"
                         :state="statePassword"
                         required
@@ -77,18 +70,13 @@
 </template>
 
 <script>
-import usersIndexPost from "../../middleware/usersIndexPost";
+import doenteIndexPost from "../../middleware/doenteIndexPost";
 
 export default {
-    middleware: usersIndexPost,
+    middleware: doenteIndexPost,
     data() {
         return {
-            options: [
-                {text: "Administrator", value:"Administrador"},
-                {text: "Health Professional", value:"ProfissionalDeSaude"}
-            ],
-            user: {
-                tipo: "Administrador",
+            doente: {
                 name: null,
                 email: null,
                 password: null
@@ -97,10 +85,10 @@ export default {
     },
     computed: {
         stateName() {
-            if(!this.user.name) {
+            if(!this.doente.name) {
                 return null
             }
-            return this.user.name.length >= 3
+            return this.doente.name.length >= 3
         },
         invalidFeedbackName() {
             if(!this.stateName) {
@@ -109,7 +97,7 @@ export default {
             return ""
         },
         stateEmail() {
-            if(!this.user.email) {
+            if(!this.doente.email) {
                 return null
             }
             return this.$refs.email.checkValidity()
@@ -121,10 +109,10 @@ export default {
             return ""
         },
         statePassword() {
-            if(!this.user.password) {
+            if(!this.doente.password) {
                 return null
             }
-            return this.user.password.length >= 8
+            return this.doente.password.length >= 8
         },
         invalidFeedbackPassword() {
             if(!this.statePassword) {
@@ -136,7 +124,7 @@ export default {
             return this.stateName && this.stateEmail && this.statePassword;
         },
         fieldsAreEmpty() {
-            return !this.user.name && !this.user.email && !this.user.password
+            return !this.doente.name && !this.doente.email && !this.doente.password
         }
     },
     methods: {
@@ -150,17 +138,17 @@ export default {
             }
         },
         onSubmit() {
-            this.$axios.$post("/api/" + ((this.user.tipo == "Administrador") ? "administradores/" : "profissionaisdesaude/"), this.user).then(response => {
-                this.$router.push("/users")
-                this.$toast.success("Successfully created new " + this.user.tipo + " (" + this.user.email + ").")
+            this.$axios.$post("/api/doentes/", this.doente).then(response => {
+                this.$router.push("/doentes")
+                this.$toast.success("Successfully created new doente (" + this.doente.email + ").")
             }).catch(error => {
-                this.$toast.error("Could not create new " + this.user.tipo + ".<\/br>Error: '" + error.response.data + "'")
+                this.$toast.error("Could not create new doente.<\/br>Error: '" + error.response.data + "'")
             })
         },
         onReset() {
-            this.user.name = null
-            this.user.email = null
-            this.user.password = null
+            this.doente.name = null
+            this.doente.email = null
+            this.doente.password = null
         }
     }
 }

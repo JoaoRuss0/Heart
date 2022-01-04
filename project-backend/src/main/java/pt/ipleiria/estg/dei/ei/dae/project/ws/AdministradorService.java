@@ -4,10 +4,7 @@ import pt.ipleiria.estg.dei.ei.dae.project.dtos.AdministradorDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.AdministradorBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyDeleteYourselfException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
@@ -44,7 +41,7 @@ public class AdministradorService {
 
     @POST
     @Path("/")
-    public Response create(AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityExistsException {
+    public Response create(AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityExistsException, MyPasswordTooShortException {
         Administrador administrador = administradorBean.create(
                 administradorDTO.getName(),
                 administradorDTO.getEmail(),
@@ -56,8 +53,8 @@ public class AdministradorService {
 
     @PUT
     @Path("/{email}")
-    public Response update(@PathParam("email") String email, AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
-        Administrador administrador = administradorBean.update(administradorDTO.getName(), email);
+    public Response update(@PathParam("email") String email, AdministradorDTO administradorDTO) throws MyConstraintViolationException, MyEntityNotFoundException, MyIncorrectPasswordException, MyPasswordTooShortException {
+        Administrador administrador = administradorBean.update(administradorDTO.getName(), email, administradorDTO.getCurrentpassword(), administradorDTO.getNewpassword());
         return Response.ok(email).build();
     }
 

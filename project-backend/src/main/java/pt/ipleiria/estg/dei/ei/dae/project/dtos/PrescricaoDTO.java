@@ -43,7 +43,6 @@ public class PrescricaoDTO implements Serializable {
     }
 
     /*Getters*/
-
     public int getId() {
         return id;
     }
@@ -94,6 +93,7 @@ public class PrescricaoDTO implements Serializable {
     public void setObservacaoID(int observacaoID) {
         this.observacaoID = observacaoID;
     }
+
     private static String gregorianToString(GregorianCalendar calendar) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-mm-dd");
         fmt.setCalendar(calendar);

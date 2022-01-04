@@ -1,51 +1,43 @@
 <template>
-    <b-container class="mt-4">
-        <h1>
-            Criar novo Dado Biomedico
-        </h1>
-        <b-form @submit.prevent="onSubmit" :disabled="!isFormValid">
-
-            <!-- Nome -->
+    <b-container>
+        <h1>New Dado Biomédico:</h1>
+        <b-form @submit.prevent="onSubmit" @reset.prevent="onReset" :disabled="!isFormValid">
             <b-form-group
                 id="inputNameGroup"
-                label="Nome:"
+                label="Name:"
                 label-for="inputName"
+                valid-feedback="Done!"
+                :invalid-feedback="invalidFeedbackName"
+                :state="stateName"
             >
                 <b-form-input
                     id="inputName"
                     v-model="dadoBiomedico.nome"
-                    placeholder="Escreva o nome"
+                    placeholder="Enter a name"
+                    :state="stateName"
                     required
                 ></b-form-input>
-
-                <div v-if="estadoNome()" style="color:red">
-                    <p>Nomes usados:</p>
-                    <div v-for="nome in this.todos">
-                        <li>{{nome.nome}}</li>
-                    </div>
-                </div>
-            </b-form-group>
-
-            <!-- Descricao -->
+        </b-form-group>
             <b-form-group
-                id="inputDescriptionGroup"
-                label="Descrição:"
-                label-for="inputDescription"
-            >
-                <b-form-input
-                    id="inputDescription"
-                    v-model="dadoBiomedico.descricao"
-                    placeholder="Escreva a descrição"
-                    required
-                ></b-form-input>
-            </b-form-group>
-
-            <!-- Minimo -->
+            id="inputDescriptionGroup"
+            label="Description:"
+            label-for="inputDescription"
+            valid-feedback="Done!"
+            :invalid-feedback="invalidFeedbackDescription"
+            :state="stateDescription"
+        >
+            <b-form-input
+                id="inputDescription"
+                v-model="dadoBiomedico.descricao"
+                placeholder="Enter a description"
+                :state="stateDescription"
+                required
+            ></b-form-input>
+        </b-form-group>
             <b-form-group
                 id="inputMinimumGroup"
-                label="Valor mínimo:"
+                label="Minimum value:"
                 label-for="inputMinimum"
-                :invalid-feedback="invalidFeedbackMinimum"
                 :state="stateMinimumMaximum"
             >
                 <b-form-input
@@ -53,16 +45,15 @@
                     v-model="dadoBiomedico.minimo"
                     type="number"
                     step="any"
+                    :state="stateMinimumMaximum"
                     required
                 ></b-form-input>
             </b-form-group>
-
-            <!-- Maximo -->
             <b-form-group
                 id="inputMaximumGroup"
-                label="Valor máximo:"
+                label="Maximum value:"
                 label-for="inputMaximum"
-                :invalid-feedback="invalidFeedbackMaximum"
+                :invalid-feedback="invalidFeedbackMinimumMaximum"
                 :state="stateMinimumMaximum"
             >
                 <b-form-input
@@ -70,52 +61,57 @@
                     v-model="dadoBiomedico.maximo"
                     type="number"
                     step="any"
+                    :state="stateMinimumMaximum"
                     required
                 ></b-form-input>
             </b-form-group>
-
-            <!-- Unidade de Medida -->
             <b-form-group
                 id="inputMeasuringUnitGroup"
-                label="Unidade de medida:"
+                label="Measuring unit:"
                 label-for="inputMeasuringUnit"
+                valid-feedback="Done!"
+                :invalid-feedback="invalidFeedbackMeasuringUnit"
+                :state="stateMeasuringUnit"
             >
                 <b-form-input
                     id="inputMeasuringUnit"
                     v-model="dadoBiomedico.unidadeMedida"
-                    placeholder="Escreva a unidade de medida"
+                    placeholder="Enter the corresponding measuring unit"
+                    :state="stateMeasuringUnit"
                     required
                 ></b-form-input>
             </b-form-group>
-
-            <!-- Qualificadores -->
             <b-form-group
-                id="qualificador"
-                label="Qualificador:"
+                id="inputQualificadorGroup"
+                label="Qualifier:"
+                label-for="inputQualificador"
+                :invalid-feedback="invalidFeedbackQualificador"
+                :state="stateQualificador"
             >
-               <b-form-input
-                    id="qualificador"
+                <b-form-input
+                    id="inputQualificador"
                     v-model="qualifier"
-                    placeholder="Escreva o Qualificador"
-                ></b-form-input>
-                <br>
-                <b-button variant="success" v-if="qualifier!=''" @click="addQualifier(qualifier)">Add Qualifier</b-button>
-                <div v-if="this.dadoBiomedico.qualificadores==''" style="color:red">Nenhum qualificador adicionado</div>
+                    placeholder="Enter a qualifier"
+                    :state="stateQualificador"
+                >
+                </b-form-input>
             </b-form-group>
 
-            <!-- Tabela Qualificadores -->
-            <div v-if="this.dadoBiomedico.qualificadores!=''">
-                <p>Lista de Qualificadores:</p>
-                <table id="app" class="display table">
-                    <tbody>
-                        <tr v-for="(dados,index) in this.dadoBiomedico.qualificadores">
-                            <td> {{ dados }}</td><b-button pill variant="danger" @click="removeQualifier(index)">X</b-button>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <b-button class="mb-4" variant="success" :disabled="!this.stateQualificador" @click="addQualifier">Add Qualifier</b-button>
 
-            <!-- Botões -->
+            <template v-if="this.dadoBiomedico.qualificadores.length == 0">
+                <p class="text-danger">At least one qualifier needs to be added.</p>
+            </template>
+            <template>
+                <b-col cols="4" class="px-0">
+                    <b-list-group>
+                        <b-list-group-item v-for="qualificador in dadoBiomedico.qualificadores" :key="qualificador">
+                                {{qualificador}}<b-button variant="danger" class="float-right" @click="removeQualifier(qualificador)">x</b-button>
+                        </b-list-group-item>
+                    </b-list-group>
+                </b-col>
+            </template>
+
             <div class="text-right">
                 <b-button variant="primary" type="submit" :disabled="!isFormValid">Create</b-button>
                 <b-button variant="danger" type="reset">Reset</b-button>
@@ -132,77 +128,108 @@ export default {
     data() {
         return {
             qualifier: "",
-            todos: [],
             dadoBiomedico: {
-                nome: '',
-                descricao:'',
-                minimo: 0.0,
-                maximo: 0.0,
-                unidadeMedida: '',
+                nome: null,
+                descricao: null,
+                minimo: null,
+                maximo: null,
+                unidadeMedida: null,
                 qualificadores: []
             },
         }
     },
-    created(){
-        this.$axios.$get('/api/dadosbiomedicos').then(todos => {
-            this.todos = todos
-        })
-    },
     computed: {
+        stateName() {
+            if(!this.dadoBiomedico.nome) {
+                return null
+            }
+            return this.dadoBiomedico.nome.length >= 3
+        },
+        invalidFeedbackName() {
+            if(!this.stateName) {
+                return "Name has to be at least 3 in length."
+            }
+            return ""
+        },
+        stateDescription() {
+            if(!this.dadoBiomedico.descricao) {
+                return null
+            }
+            return this.dadoBiomedico.descricao.length >= 5
+        },
+        invalidFeedbackDescription() {
+            if(!this.stateDescription) {
+                return "Name has to be at least 5 in length."
+            }
+            return ""
+        },
         stateMinimumMaximum() {
+            if(this.dadoBiomedico.minimo == null || !this.dadoBiomedico.maximo == null) {
+                return null
+            }
             return this.dadoBiomedico.minimo <= this.dadoBiomedico.maximo
         },
-        invalidFeedbackMinimum() {
-            if(this.stateMinimumMaximum)
+        invalidFeedbackMinimumMaximum() {
+            if(!this.stateMinimumMaximum)
             {
-                return ""
+                return "Maximum value has to be equal to or more than the minimum value."
             }
-            return "Valor mínimo tem de ser menor ou igual ao máximo."
+            return ""
         },
-        invalidFeedbackMaximum() {
-            if(this.stateMinimumMaximum)
-            {
-                return ""
+        stateMeasuringUnit() {
+            if(!this.dadoBiomedico.unidadeMedida) {
+                return null
             }
-            return "Valor máximo tem de ser maior ou igual ao mínimo."
+            return this.dadoBiomedico.unidadeMedida.length >= 1
+        },
+        invalidFeedbackMeasuringUnit() {
+            if(!this.stateMeasuringUnit)
+            {
+                return "Measuring unit has to be at least 1 in length."
+            }
+            return ""
+        },
+        stateQualificador() {
+            if(!this.qualifier) {
+                return null
+            }
+            return this.qualifier.length >= 3 && (this.dadoBiomedico.qualificadores.find(qualificador => qualificador == this.qualifier) == undefined)
+        },
+        invalidFeedbackQualificador() {
+            if(!this.stateQualificador)
+            {
+                return "Qualifier has to be at least 3 in length and can not be already added to the list."
+            }
+            return ""
         },
         isFormValid() {
-            return (this.stateMinimumMaximum &&this.dadoBiomedico.qualificadores!='' && !this.estadoNome())
+            return this.stateName && this.stateMinimumMaximum && this.stateDescription && this.stateMeasuringUnit
         }
     },
     methods: {
-        estadoNome(){
-            for (let i = 0; i < this.todos.length; i++) {
-                if(this.dadoBiomedico.nome.toUpperCase() === this.todos[i].nome.toUpperCase()){
-                    alert("Atenção, o nome do dado não pode ser igual a um dado já criado")
-                    return 1
-                }
-            }
-            return 0;
-        },
         removeQualifier(index){
             this.dadoBiomedico.qualificadores.splice(index, 1);
         },
-        addQualifier(input) {
-            for (let i = 0; i < this.dadoBiomedico.qualificadores.length; i++) {
-                if(input == this.dadoBiomedico.qualificadores[i]){
-                    alert("Não pode repetir qualificadores!")
-                    return 0
-                }
-            }
-            this.dadoBiomedico.qualificadores.push(input);
-            this.qualifier='';
+        addQualifier() {
+            this.dadoBiomedico.qualificadores.push(this.qualifier);
+            this.qualifier = null;
         },
-        onSubmit(event) {
+        onSubmit() {
             this.dadoBiomedico.nome = this.dadoBiomedico.nome.replace(/\s/g,'_');
-            this.$axios.$post('api/dadosbiomedicos/', this.dadoBiomedico)
-            .then(() => {
+
+            this.$axios.$post('api/dadosbiomedicos/', this.dadoBiomedico).then(() => {
+                this.$toast.success("Successfully created new dado biomédico (" + this.dadoBiomedico.nome + ").")
                 this.$router.push("/dadosbiomedicos")
-                alert("Dado Biomedico criado")
+            }).catch(error => {
+                this.$toast.error("Could not create new dado biomédico.<\/br>Error: '" + error.response.data + "'")
             })
-            .catch( error => {
-                alert(error)
-            })
+        },
+        onReset() {
+            this.dadoBiomedico.descricao = null
+            this.dadoBiomedico.minimo = null
+            this.dadoBiomedico.maximo = null
+            this.dadoBiomedico.unidadeMedida = null
+            this.dadoBiomedico.qualificadores = []
         }
     },
 }

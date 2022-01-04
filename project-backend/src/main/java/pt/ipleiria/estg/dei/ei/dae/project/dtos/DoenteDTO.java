@@ -1,42 +1,35 @@
 package pt.ipleiria.estg.dei.ei.dae.project.dtos;
 
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DoenteDTO implements Serializable {
 
     private String name;
     private String email;
-    private int idade;
-    private double peso;
-    private double altura;
-    private List<PrescricaoDTO> prescricoes;
     private String password;
+    private String newpassword;
+    private String currentpassword;
 
     public DoenteDTO() {
-        prescricoes = new ArrayList<>();
+
     }
 
-    public DoenteDTO(String name, String email, int idade, double peso, double altura, List<PrescricaoDTO> prescricoes) {
+    public DoenteDTO(String name, String email) {
         this.name = name;
         this.email = email;
-        this.idade = idade;
-        this.peso = peso;
-        this.altura = altura;
-        this.prescricoes=prescricoes;
     }
 
-    public DoenteDTO(String name, String email, int idade, double peso, double altura, String password) {
+    public DoenteDTO(String name, String email, String password) {
         this.name = name;
         this.email = email;
-        this.idade = idade;
-        this.peso = peso;
-        this.altura = altura;
-        this.prescricoes = new ArrayList<>();
         this.password = password;
+    }
+
+    public DoenteDTO(String name, String email, String currentpassword, String newpassword) {
+        this.name = name;
+        this.email = email;
+        this.currentpassword = currentpassword;
+        this.newpassword = newpassword;
     }
 
     /*Getters*/
@@ -46,23 +39,15 @@ public class DoenteDTO implements Serializable {
     public String getEmail() {
         return email;
     }
-    public int getIdade() {
-        return idade;
-    }
-    public double getPeso() {
-        return peso;
-    }
-    public double getAltura() {
-        return altura;
-    }
     public String getPassword() {
         return password;
     }
-    public List<PrescricaoDTO> getPrescricoes() {
-        return prescricoes;
+    public String getNewpassword() {
+        return newpassword;
     }
-
-
+    public String getCurrentpassword() {
+        return currentpassword;
+    }
 
     /*Setters*/
     public void setName(String name) {
@@ -71,19 +56,13 @@ public class DoenteDTO implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-    public void setIdade(int idade) {
-        this.idade = idade;
-    }
-    public void setPeso(double peso) {
-        this.peso = peso;
-    }
-    public void setAltura(double altura) {
-        this.altura = altura;
-    }
-    public void setPrescricoes(List<PrescricaoDTO> prescricoes) {
-        this.prescricoes = prescricoes;
-    }
-    public void setPassword(String Password) {
+    public void setPassword(String password) {
         this.password = password;
+    }
+    public void setNewpassword(String newpassword) {
+        this.newpassword = newpassword;
+    }
+    public void setCurrentpassword(String currentpassword) {
+        this.currentpassword = currentpassword;
     }
 }

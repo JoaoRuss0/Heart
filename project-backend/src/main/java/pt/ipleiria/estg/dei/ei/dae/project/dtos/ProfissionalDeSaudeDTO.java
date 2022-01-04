@@ -7,6 +7,8 @@ public class ProfissionalDeSaudeDTO implements Serializable {
     private String email;
     private String name;
     private String password;
+    private String newpassword;
+    private String currentpassword;
 
     public ProfissionalDeSaudeDTO() {
     }
@@ -21,6 +23,12 @@ public class ProfissionalDeSaudeDTO implements Serializable {
         this.email = email;
         this.password = password;
     }
+    public ProfissionalDeSaudeDTO(String name, String email, String newpassword, String currentpassword) {
+        this.name = name;
+        this.email = email;
+        this.currentpassword = currentpassword;
+        this.newpassword = newpassword;
+    }
 
     /*Getters*/
     public String getName() {
@@ -32,6 +40,12 @@ public class ProfissionalDeSaudeDTO implements Serializable {
     public String getPassword() {
         return password;
     }
+    public String getNewpassword() {
+        return newpassword;
+    }
+    public String getCurrentpassword() {
+        return currentpassword;
+    }
 
     /*Setters*/
     public void setName(String name) {
@@ -42,5 +56,11 @@ public class ProfissionalDeSaudeDTO implements Serializable {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public void setNewpassword(String newpassword) {
+        this.newpassword = newpassword;
+    }
+    public void setCurrentpassword(String currentpassword) {
+        this.currentpassword = currentpassword;
     }
 }

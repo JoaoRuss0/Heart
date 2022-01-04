@@ -1,42 +1,51 @@
 <template>
-    <div>
-        <b-container fluid="sm">
-            <div v-if="prescricao">
-                <h1 class="mb-4 mt-4">
-                    Prescricão com o ID nº{{ prescricao['id'] }}
-                </h1>
-                <b-list-group>
-                    <b-list-group-item><strong>Causa: </strong>{{ prescricao['causa'] }} </b-list-group-item>
-                    <b-list-group-item variant="secondary"><strong>Email do Doente: </strong>{{ prescricao['doenteEmail'] }} </b-list-group-item>
-                    <b-list-group-item><strong>Data Inicio: </strong>{{ prescricao['dataInicio'] }}</b-list-group-item>
-                    <b-list-group-item variant="secondary"><strong>Data Final: </strong>{{ prescricao['dataFinal'] }}</b-list-group-item>
-                    <b-list-group-item><strong>Tipo Prescrição: </strong>{{ prescricao['tipoPrescricao'] }}</b-list-group-item>
-                </b-list-group>
-
-
-                
-            </div>
-        </b-container>
-    </div>
+    <b-container>
+        <h1>Prescrição details:</h1>
+        <template v-if="prescricao != null">
+            <b-form-group id="fieldset-id" label="ID:">
+                <b-form-input :disabled="true" :value="prescricao.id"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-comentario" label="Comment:">
+                <b-form-input :disabled="true" :value="prescricao.comentario"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-doenteEmail" label="Doente's Email Address:">
+                <b-form-input :disabled="true" :value="prescricao.doenteEmail"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-dataInicio" label="Start Date:">
+                <b-form-input :disabled="true" :value="prescricao.dataInicio"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-dataFinal" label="Final Date:">
+                <b-form-input :disabled="true" :value="prescricao.dataFinal"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-tipoPrescricao" label="Prescription Type:">
+                <b-form-input :disabled="true" :value="prescricao.tipoPrescricao"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-profissionalDeSaudeEmail" label="Profissional de Saúde's Email Address:">
+                <b-form-input :disabled="true" :value="prescricao.profissionalDeSaudeEmail"></b-form-input>
+            </b-form-group>
+            <b-form-group id="fieldset-observacaoID" label="Observação ID:">
+                <b-form-input :disabled="true" :value="prescricao.observacaoID"></b-form-input>
+            </b-form-group>
+        </template>
+        <template v-else>
+            <Spinner/>
+        </template>
+    </b-container>
 </template>
 
 <script>
 export default {
     data () {
         return {
-            prescricao:
-                {
-                    causa: null,
-                    doenteEmail: null,
-                    dataInicio: null,
-                    dataFinal: null,
-                    tipoPrescricao: "prescricaoExercicioFisico"
-                }
+            prescricao: null
         }
     },
     created () {
         this.$axios.$get('api/prescricoes/' + this.$route.params.id).then((prescricao) => {
             this.prescricao = prescricao
+        }).catch(error => {
+            this.$toast.error("Could not get prescrição (" + this.$route.params.id + ").")
+            this.$router.push("/prescricoes")
         })
     },
 }

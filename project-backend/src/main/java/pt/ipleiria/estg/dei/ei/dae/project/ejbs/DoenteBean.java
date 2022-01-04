@@ -1,9 +1,10 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Observacao;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -21,15 +22,23 @@ public class DoenteBean {
     @EJB
     UserBean userBean;
 
-    public Doente create(String name, String email, String password, int idade, double peso, double altura) throws MyEntityExistsException, MyConstraintViolationException {
+    @EJB
+    PrescricaoBean prescricaoBean;
+
+    public Doente create(String name, String email, String password) throws MyEntityExistsException, MyConstraintViolationException, MyPasswordTooShortException {
         if(userBean.find(email) != null) {
             throw new MyEntityExistsException("Doente with email = '" + email + "' already exists.");
+        }
+
+        if(password.length() < 8)
+        {
+            throw new MyPasswordTooShortException("Password has to be at least 8 in length.");
         }
 
         Doente doente;
 
         try{
-            doente = new Doente(name, email, password, idade, peso, altura);
+            doente = new Doente(name, email, password);
             entityManager.persist(doente);
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
@@ -38,14 +47,24 @@ public class DoenteBean {
         return doente;
     }
 
-    public Doente update(String name, String email, int idade, double peso, double altura) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public Doente update(String name, String email, String currentpassword, String newpassword) throws MyConstraintViolationException, MyEntityNotFoundException, MyPasswordTooShortException, MyIncorrectPasswordException {
         Doente doente = findOrFail(email);
+
+        if(currentpassword != null && newpassword != null && (currentpassword.length() < 8 || newpassword.length() < 8))
+        {
+            throw new MyPasswordTooShortException("New or current password have to be at least 8 in length.");
+        }
 
         try{
             doente.setName(name);
-            doente.setIdade(idade);
-            doente.setPeso(peso);
-            doente.setAltura(altura);
+
+            if(currentpassword != null && newpassword != null){
+                if(User.hashPassword(currentpassword).equals(doente.getPassword())) {
+                    doente.setPassword(User.hashPassword(newpassword));
+                }else{
+                    throw new MyIncorrectPasswordException("Current password is different from the provided current password.");
+                }
+            }
 
             entityManager.merge(doente);
         } catch (ConstraintViolationException e) {
@@ -57,6 +76,15 @@ public class DoenteBean {
 
     public String delete(String email) throws MyEntityNotFoundException {
         Doente doente = findOrFail(email);
+
+        for (Prescricao prescricao: doente.getPrescricoes()) {
+            prescricaoBean.delete(prescricao.getId());
+        }
+
+        for (Observacao observacao: doente.getObservacoes()) {
+            entityManager.remove(observacao);
+        }
+
         entityManager.remove(doente);
 
         return email;

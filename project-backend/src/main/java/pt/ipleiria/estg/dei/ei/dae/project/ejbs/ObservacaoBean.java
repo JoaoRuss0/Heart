@@ -32,6 +32,9 @@ public class ObservacaoBean {
     @EJB
     DadoBiomedicoBean dadoBiomedicoBean;
 
+    @EJB
+    PrescricaoBean prescricaoBean;
+
     public Observacao create(String doenteEmail, String profissionalDeSaudeEmail, String nomeDadoBiomedico, String data, int valorQuantitativo, String valorQualitativo) throws MyEntityNotFoundException, MyParseException, MyValueNotFoundException, MyValueOutOfBoundsException, MyConstraintViolationException {
         Doente doente = doenteBean.findOrFail(doenteEmail);
         ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.findOrFail(profissionalDeSaudeEmail);
@@ -93,6 +96,12 @@ public class ObservacaoBean {
 
     public void delete(int id) throws MyEntityNotFoundException {
         Observacao observacao = findOrFail(id);
+
+        if(observacao.getPrescricao() != null)
+        {
+            prescricaoBean.delete(observacao.getPrescricao().getId());
+        }
+
         observacao.getDoente().removerObservacao(observacao);
         observacao.getProfissionalDeSaude().removerObservacao(observacao);
         entityManager.remove(observacao);

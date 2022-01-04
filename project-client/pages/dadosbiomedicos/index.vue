@@ -2,11 +2,11 @@
     <b-container>
         <h1>List of Dados Biomedicos:</h1>
 
-        <template v-if="dados.length == 0 && dadosLoading == false">
-            <p class="text-danger">No observações to show.</p>
-        </template>
-        <template v-else>
-            <b-row :no-gutters="true">
+        <b-row :no-gutters="true">
+            <template v-if="dados.length == 0 && dadosLoading == false">
+                <p class="text-danger">No observações to show.</p>
+            </template>
+            <template v-else>
                 <b-table
                     hover
                     bordered
@@ -25,21 +25,21 @@
                         <Spinner />
                     </template>
                 </b-table>
-            </b-row>
+            </template>
+        </b-row>
 
-            <b-row :no-gutters="true">
-                <b-col class="text-left">
-                    <b-button variant="success" v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'Administrador'" @click="pushRoute(`/dadosbiomedicos/create/`)">Create</b-button>
-                </b-col>
-                <b-col class="text-right">
-                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}`)">Details</b-button>
-                    <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'Administrador'">
-                        <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}/update`)">Update</b-button>
-                        <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteDadoBiomedico(selectedRow[0])">Delete</b-button>
-                    </template>
-                </b-col>
-            </b-row>
-        </template>
+        <b-row :no-gutters="true">
+            <b-col class="text-left">
+                <b-button variant="success" v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'Administrador'" @click="pushRoute(`/dadosbiomedicos/create/`)">Create</b-button>
+            </b-col>
+            <b-col class="text-right">
+                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}`)">Details</b-button>
+                <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'Administrador'">
+                    <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}/update`)">Update</b-button>
+                    <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteDadoBiomedico(selectedRow[0])">Delete</b-button>
+                </template>
+            </b-col>
+        </b-row>
     </b-container>
 </template>
 
@@ -73,6 +73,7 @@ export default {
         },
         deleteDadoBiomedico(row) {
             this.$axios.$delete(`/api/dadosbiomedicos/${row.nome}`).then(response => {
+                this.selectedRow = []
 
                 this.$toast.success("Successfully deleted dado biomedico (" + row.id + ").")
 

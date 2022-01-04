@@ -1,46 +1,83 @@
 <template>
-    <div>
-        <b-container>
-            <h1 class="mb-4 mt-4">
-                Update Prescricao com o ID nº{{ prescricao['id'] }}
-            </h1>
-            <form @submit.prevent="create">
-                <b-row class="mb-3">
-                    <b-col><strong>Causa:</strong></b-col>
-                    <b-col><input v-model="prescricao['causa']" type="text"  placeholder="${ prescricao.causa }"/></b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Email do Doente:</strong></b-col>
-                    <b-col><input v-model="prescricao['doenteEmail']" type="text"  /></b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Data Inicio:</strong></b-col>
-                    <b-col>
-                        <b-form-datepicker id="dataInicial" v-model="prescricao['dataInicio']" class="mb-2"></b-form-datepicker></b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Data Final:</strong></b-col>
-                    <b-col>
-                        <b-form-datepicker id="dataFinal" v-model="prescricao['dataFinal']" class="mb-2"></b-form-datepicker></b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Tipo Prescrição:</strong></b-col>
-                    <b-col>
-                    <select v-model="prescricao['tipoPrescricao']" id="tipoPrescricao" name="tipoPrescricao">
-                        <option value="prescricaoExercicioFisico">Prescrição Exercicio Fisico</option>
-                        <option value="prescricaoMedica">Prescrição Médica</option>
-                        <option value="prescricaoNutricao">Prescrição Nutrição</option>
-                    </select>
-                    </b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col>
-                        <button @click.prevent="update" class="btn btn-light">UPDATE</button>
-                    </b-col>
-                </b-row>
-            </form>
-        </b-container>
-    </div>
+    <b-container>
+        <h3>Update Prescrição:</h3>
+        <b-form @submit.prevent="update" @reset.prevent="onReset" :disabled="!isFormValid">
+            <b-form-group
+                id="groupSelectTipoPrescricao"
+                label="Prescrião Type:"
+                label-for="selectTipoPrescricao"
+                valid-feedback="Done!"
+                :state="stateTipoPrescricao"
+            >
+                <b-form-select id="selectTipoPrescricao" name="tipoPrescricao" v-model="prescricao.tipoPrescricao" :options="options" :state="stateTipoPrescricao"></b-form-select>
+            </b-form-group>
+            <b-form-group
+                id="inputCausaGroup"
+                label="Observação ID:"
+                label-for="inputObservacaoID"
+            >
+                <b-input
+                    id="inputObservacaoID"
+                    name="observacaoID"
+                    v-model.trim="prescricao.observacaoID"
+                    disabled
+                    required/>
+            </b-form-group>
+            <b-form-group
+                id="inputComentarioGroup"
+                label="Comment:"
+                label-for="inputComentario"
+                valid-feedback="Done!"
+                :invalid-feedback="invalidFeedbackComentario"
+                :state="stateComentario"
+            >
+                <b-form-textarea
+                    id="inputComentario"
+                    name="comentario"
+                    placeholder="Comment regarding the prescrição."
+                    v-model.trim="prescricao.comentario"
+                    rows="6"
+                    :state="stateComentario"
+                    required
+                ></b-form-textarea>
+            </b-form-group>
+            <b-form-group
+                id="inputEmail"
+                label="Doente Email Address:"
+                label-for="inputEmail"
+            >
+                <b-input
+                    id="inputEmail"
+                    name="email"
+                    type="email"
+                    v-model="prescricao.doenteEmail"
+                    disabled
+                    required/>
+            </b-form-group>
+            <b-form-group
+                id="inputGroupDataInicio"
+                label="Start Date:"
+                label-for="inputDataInicio"
+                :state="stateDatas"
+            >
+                <b-form-datepicker id="inputDataInicio" :state="stateDatas" v-model="prescricao.dataInicio" class="mb-2"></b-form-datepicker>
+            </b-form-group>
+            <b-form-group
+                id="inputGroupDataFinal"
+                label="End Date:"
+                label-for="inputDataFinal"
+                valid-feedback="Done!"
+                :state = "stateDatas"
+                :invalid-feedback="invalidFeedbackDatas"
+            >
+                <b-form-datepicker id="inputDataFinal" :state="stateDatas" v-model="prescricao.dataFinal" class="mb-2"></b-form-datepicker>
+            </b-form-group>
+            <div class="text-right">
+                <b-button type="submit" class="btn-warning" :disabled="!isFormValid">Update</b-button>
+                <b-button variant="danger" type="reset" :disabled="fieldsAreEmpty">Reset</b-button>
+            </div>
+        </b-form>
+    </b-container>
 </template>
 
 <script>
@@ -48,16 +85,23 @@ import observacoesPrescricoesPostPutDelete from '../../../middleware/observacoes
 
 export default {
     middleware: observacoesPrescricoesPostPutDelete,
-    data () {
+    data() {
         return {
+            options:
+            [
+                {value: "prescricaoExercicioFisico",text: "Prescrição Exercicio Fisico"},
+                {value: "prescricaoMedica",text: "Prescrição Médica"},
+                {value: "prescricaoNutricao",text: "Prescrição Nutrição"}
+            ],
             prescricao:
-                {
-                    causa: null,
-                    doenteEmail: null,
-                    dataInicio: null,
-                    dataFinal: null,
-                    tipoPrescricao: "prescricaoExercicioFisico"
-                }
+            {
+                comentario: null,
+                doenteEmail: null,
+                dataInicio: null,
+                dataFinal: null,
+                tipoPrescricao: null,
+                observacaoID: null,
+            }
         }
     },
     created () {
@@ -65,19 +109,64 @@ export default {
             this.prescricao = prescricao
         })
     },
+    computed: {
+        stateTipoPrescricao() {
+            if(!this.prescricao.tipoPrescricao)
+            {
+                return null
+            }
+            return this.prescricao.tipoPrescricao != null
+        },
+        stateComentario() {
+            if(!this.prescricao.comentario)
+            {
+                return null
+            }
+            return this.prescricao.comentario.length >= 5
+        },
+        stateDatas()
+        {
+            if(!this.prescricao.dataInicio || !this.prescricao.dataFinal)
+            {
+                return null
+            }
+            return this.prescricao.dataInicio <= this.prescricao.dataFinal
+        },
+        invalidFeedbackComentario() {
+            if(this.stateComentario)
+            {
+                return ""
+            }
+            return "Comentario is too short (at least 5 in length)."
+        },
+        invalidFeedbackDatas() {
+            if(this.stateDatas)
+            {
+                return ""
+            }
+            return "Start date has to be the same or lower than the End date."
+        },
+        isFormValid() {
+            return this.stateDatas && this.stateComentario
+        },
+        fieldsAreEmpty() {
+            return !this.prescricao.comentario && !this.prescricao.dataInicio && !this.prescricao.dataFinal
+        }
+    },
     methods: {
         update: function () {
-            this.$axios.$put('api/prescricoes/' + this.$route.params.id, {
-                "causa": this.prescricao.causa,
-                "doenteEmail": this.prescricao.doenteEmail,
-                "dataInicio": this.prescricao.dataInicio,
-                "dataFinal":this.prescricao.dataFinal,
-                "tipoPrescricao": this.prescricao.tipoPrescricao
-
-
-            }).then(() =>
+            this.$axios.$put('api/prescricoes/' + this.$route.params.id, this.prescricao).then(() => {
+                this.$toast.success("Prescricao was updated with success!")
                 this.$router.push('/prescricoes')
-            )
+            }).catch(error => {
+                this.$toast.error("Could not create new prescrição.<\/br>Error: '" + error.response.data + "'")
+            })
+        },
+        onReset() {
+            this.prescricao.comentario = null
+            this.prescricao.dataFinal = null
+            this.prescricao.dataInicio = null
+            this.prescricao.tipoPrescricao = null
         }
     }
 }

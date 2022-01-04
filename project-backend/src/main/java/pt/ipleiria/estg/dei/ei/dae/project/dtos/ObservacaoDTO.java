@@ -28,7 +28,7 @@ public class ObservacaoDTO implements Serializable {
         this.data = gregorianToString(data);
         this.valorQuantitativo = valorQuantitativo;
         this.valorQualitativo = valorQualitativo;
-        this.prescricaoID = (prescricao==null)? 0 : prescricao.getId();
+        this.prescricaoID = (prescricao == null) ? 0 : prescricao.getId();
     }
 
     /*Getters*/
@@ -53,7 +53,6 @@ public class ObservacaoDTO implements Serializable {
     public String getValorQualitativo() {
         return valorQualitativo;
     }
-
     public int getPrescricaoID() {
         return prescricaoID;
     }
@@ -80,7 +79,6 @@ public class ObservacaoDTO implements Serializable {
     public void setValorQualitativo(String valorQualitativo) {
         this.valorQualitativo = valorQualitativo;
     }
-
     public void setPrescricaoID(int prescricaoID) {
         this.prescricaoID = prescricaoID;
     }

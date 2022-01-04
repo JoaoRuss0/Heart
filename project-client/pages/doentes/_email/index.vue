@@ -1,11 +1,14 @@
 <template>
-    <IndexProfissionalAdministrador :user="doente"/>
+    <IndexEntities :user="doente"/>
 </template>
 
 <script>
-import IndexProfissionalAdministrador from "../../../components/IndexEntities";
+import IndexEntities from "../../../components/IndexEntities";
+import doenteView from "../../../middleware/doenteView";
+
 export default {
-    components: {IndexProfissionalAdministrador},
+    middleware: doenteView,
+    components: {IndexEntities},
     data() {
         return {
             doente: null,

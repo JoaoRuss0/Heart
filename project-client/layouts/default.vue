@@ -34,6 +34,8 @@
                         <template #button-content>
                             <em>{{ $auth.user.sub }}</em>
                         </template>
+                        <b-dropdown-item @click.prevent="$router.push(profileRoute)">My Profile</b-dropdown-item>
+                        <b-dropdown-item @click.prevent="$router.push(updateProfileRoute)">Update Profile</b-dropdown-item>
                         <b-dropdown-item @click.prevent="signOut">Sign Out</b-dropdown-item>
                     </b-nav-item-dropdown>
                     <li class="nav-item" v-else>
@@ -61,6 +63,38 @@ export default {
         signOut() {
             this.$auth.logout()
             this.$router.push("/")
+        }
+    },
+    computed: {
+        profileRoute(){
+            if(this.$auth.loggedIn){
+                switch (this.$auth.user.groups[0]){
+                    case 'Administrador':
+                        return "/administradores/" + this.$auth.user.sub
+                        break;
+                    case 'Doente':
+                        return "/doentes/" + this.$auth.user.sub
+                        break;
+                    case 'ProfissionalDeSaude':
+                        return "/profissionaisdesaude/" + this.$auth.user.sub
+                        break;
+                }
+            }
+        },
+        updateProfileRoute(){
+            if(this.$auth.loggedIn){
+                switch (this.$auth.user.groups[0]){
+                    case 'Administrador':
+                        return "/administradores/" + this.$auth.user.sub + "/update"
+                        break;
+                    case 'Doente':
+                        return "/doentes/" + this.$auth.user.sub + "/update"
+                        break;
+                    case 'ProfissionalDeSaude':
+                        return "/profissionaisdesaude/" + this.$auth.user.sub + "/update"
+                        break;
+                }
+            }
         }
     }
 }

@@ -1,8 +1,11 @@
 package pt.ipleiria.estg.dei.ei.dae.project.entities;
 
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyPasswordTooShortException;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -39,7 +42,7 @@ public abstract class User implements Serializable {
 
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password) throws MyPasswordTooShortException {
         this.name = name;
         this.email = email;
         this.password = hashPassword(password);

@@ -5,10 +5,7 @@ import pt.ipleiria.estg.dei.ei.dae.project.dtos.PrescricaoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyDeleteYourselfException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
@@ -63,21 +60,18 @@ public class DoenteService {
 
     @POST
     @Path("/")
-    public Response create(DoenteDTO doenteDTO) throws MyEntityExistsException, MyConstraintViolationException {
+    public Response create(DoenteDTO doenteDTO) throws MyEntityExistsException, MyConstraintViolationException, MyPasswordTooShortException {
         doenteBean.create(
                 doenteDTO.getName(),
                 doenteDTO.getEmail(),
-                doenteDTO.getPassword(),
-                doenteDTO.getIdade(),
-                doenteDTO.getPeso(),
-                doenteDTO.getAltura());
+                doenteDTO.getPassword());
 
         return Response.ok(doenteDTO.getEmail()).build();
     }
 
     @PUT
     @Path("/{email}")
-    public Response update(@PathParam("email") String email, DoenteDTO doenteDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public Response update(@PathParam("email") String email, DoenteDTO doenteDTO) throws MyConstraintViolationException, MyEntityNotFoundException, MyPasswordTooShortException, MyIncorrectPasswordException {
         Principal principal = securityContext.getUserPrincipal();
 
         // Only an Health Professional or the actual Ill Person can update themselves
@@ -89,9 +83,8 @@ public class DoenteService {
         doenteBean.update(
                 doenteDTO.getName(),
                 email,
-                doenteDTO.getIdade(),
-                doenteDTO.getPeso(),
-                doenteDTO.getAltura());
+                doenteDTO.getCurrentpassword(),
+                doenteDTO.getNewpassword());
 
         return Response.ok(email).build();
     }
@@ -110,11 +103,7 @@ public class DoenteService {
     private DoenteDTO toDTODoente(Doente doente) {
         return new DoenteDTO(
                 doente.getName(),
-                doente.getEmail(),
-                doente.getIdade(),
-                doente.getPeso(),
-                doente.getAltura(),
-                toDTOsPrescricao(doente.getPrescricoes())
+                doente.getEmail()
         );
     }
 
@@ -125,7 +114,7 @@ public class DoenteService {
     private PrescricaoDTO toDTOPrescricao(Prescricao prescricao) {
         return new PrescricaoDTO(
                 prescricao.getId(),
-                prescricao.getCausa(),
+                prescricao.getComentario(),
                 prescricao.getDoente().getEmail(),
                 prescricao.getDataInicio(),
                 prescricao.getDataFinal(),

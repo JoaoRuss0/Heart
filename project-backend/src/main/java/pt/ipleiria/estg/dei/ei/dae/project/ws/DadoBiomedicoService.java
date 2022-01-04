@@ -3,8 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.project.ws;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.DadoBiomedicoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DadoBiomedicoBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.DadoBiomedico;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
@@ -29,18 +28,14 @@ public class DadoBiomedicoService {
 
     @GET
     @Path("/{nome}")
-    public Response get(@PathParam("nome") String nome){
-        DadoBiomedico dado = dadoBiomedicoBean.find(nome);
-
-        if(dado == null) {
-            throw new NotFoundException("Dado Biomedico with name " + nome + " does not exist!");
-        }
+    public Response get(@PathParam("nome") String nome) throws MyEntityNotFoundException {
+        DadoBiomedico dado = dadoBiomedicoBean.findOrFail(nome);
         return Response.ok(toDTO(dado)).build();
     }
 
     @POST
     @Path("/")
-    public Response create(DadoBiomedicoDTO dadoBiomedicoDTO) throws Exception {
+    public Response create(DadoBiomedicoDTO dadoBiomedicoDTO) throws MyConstraintViolationException, MyMaximumMinumumException, MyEntityExistsException, MyQualificadoresEmpty {
         DadoBiomedico dadoBiomedico = dadoBiomedicoBean.create(
                 dadoBiomedicoDTO.getNome(),
                 dadoBiomedicoDTO.getDescricao(),
@@ -55,7 +50,7 @@ public class DadoBiomedicoService {
 
     @PUT
     @Path("/{nome}")
-    public Response update(@PathParam("nome") String nome, DadoBiomedicoDTO dadoBiomedicoDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public Response update(@PathParam("nome") String nome, DadoBiomedicoDTO dadoBiomedicoDTO) throws MyConstraintViolationException, MyEntityNotFoundException, MyMaximumMinumumException, MyQualificadoresEmpty {
         dadoBiomedicoBean.update(
                 nome,
                 dadoBiomedicoDTO.getDescricao(),

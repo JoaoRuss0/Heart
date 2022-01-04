@@ -3,10 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.project.ws;
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.ProfissionalDeSaudeDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.ProfissionalDeSaudeBean;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyDeleteYourselfException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
@@ -51,7 +48,7 @@ public class ProfissionalDeSaudeService {
 
     @POST
     @Path("/")
-    public Response create(ProfissionalDeSaudeDTO profissionalDeSaudeDTO) throws MyConstraintViolationException, MyEntityExistsException {
+    public Response create(ProfissionalDeSaudeDTO profissionalDeSaudeDTO) throws MyConstraintViolationException, MyEntityExistsException, MyPasswordTooShortException {
         ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.create(
                 profissionalDeSaudeDTO.getName(),
                 profissionalDeSaudeDTO.getEmail(),
@@ -63,7 +60,7 @@ public class ProfissionalDeSaudeService {
 
     @PUT
     @Path("/{email}")
-    public Response update(@PathParam("email") String email, ProfissionalDeSaudeDTO profissionalDeSaudeDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public Response update(@PathParam("email") String email, ProfissionalDeSaudeDTO profissionalDeSaudeDTO) throws MyConstraintViolationException, MyEntityNotFoundException, MyIncorrectPasswordException, MyPasswordTooShortException {
         Principal principal = securityContext.getUserPrincipal();
 
         // Only an Administrator or the respective Health Professional can update himself
@@ -72,20 +69,13 @@ public class ProfissionalDeSaudeService {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.update(profissionalDeSaudeDTO.getName(), email);
+        ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.update(profissionalDeSaudeDTO.getName(), email, profissionalDeSaudeDTO.getNewpassword(), profissionalDeSaudeDTO.getCurrentpassword());
         return Response.ok(email).build();
     }
 
     @DELETE
     @Path("/{email}")
     public Response delete(@PathParam("email") String email) throws MyDeleteYourselfException, MyEntityNotFoundException {
-        Principal principal = securityContext.getUserPrincipal();
-
-        if(principal.getName().equals(email))
-        {
-            throw new MyDeleteYourselfException("Can not delete yourself.");
-        }
-
         profissionalDeSaudeBean.delete(email);
         return Response.ok(email).build();
     }

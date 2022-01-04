@@ -4,9 +4,10 @@
 
 <script>
 import IndexEntities from "../../../components/IndexEntities";
-
+import administradoresViewPostPut from "../../../middleware/administradoresViewPostPut";
 
 export default {
+    middleware: administradoresViewPostPut,
     components: {IndexEntities},
     data() {
         return {

@@ -1,9 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -20,13 +19,18 @@ public class AdministradorBean {
     @EJB
     UserBean userBean;
 
-    public Administrador create(String name, String email, String password) throws MyConstraintViolationException, MyEntityExistsException {
+    public Administrador create(String name, String email, String password) throws MyConstraintViolationException, MyEntityExistsException, MyPasswordTooShortException {
         if(userBean.find(email) != null)
         {
             throw new MyEntityExistsException("User with email = '" + email + "' already exists.");
         }
 
-        Administrador administrador ;
+        if(password.length() < 8)
+        {
+            throw new MyPasswordTooShortException("Password has to be at least 8 in length.");
+        }
+
+        Administrador administrador;
 
         try {
             administrador = new Administrador(name, email, password);
@@ -38,11 +42,24 @@ public class AdministradorBean {
         return administrador;
     }
 
-    public Administrador update(String name, String email) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public Administrador update(String name, String email, String currentpassword, String newpassword) throws MyConstraintViolationException, MyEntityNotFoundException, MyPasswordTooShortException, MyIncorrectPasswordException {
         Administrador administrador = findOrFail(email);
+
+        if(currentpassword != null && newpassword != null && (currentpassword.length() < 8 || newpassword.length() < 8))
+        {
+            throw new MyPasswordTooShortException("New or current password have to be at least 8 in length.");
+        }
 
         try {
             administrador.setName(name);
+
+            if(currentpassword != null && newpassword != null){
+                if(User.hashPassword(currentpassword).equals(administrador.getPassword())) {
+                    administrador.setPassword(User.hashPassword(newpassword));
+                }else{
+                    throw new MyIncorrectPasswordException("Current password is different from the provided current password.");
+                }
+            }
 
             entityManager.merge(administrador);
         } catch (ConstraintViolationException e) {

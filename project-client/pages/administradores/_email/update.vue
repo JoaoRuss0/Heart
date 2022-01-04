@@ -4,19 +4,24 @@
 
 <script>
 import UpdateProfissionalAdministrador from "../../../components/UpdateProfissionalAdministrador";
-import administradoresPut from "../../../middleware/administradoresPut";
+import administradoresViewPostPut from "../../../middleware/administradoresViewPostPut";
 
 export default {
     components: {UpdateProfissionalAdministrador},
-    middleware: administradoresPut,
+    middleware: administradoresViewPostPut,
     data() {
         return {
+            currentpassword: null,
+            newpassword: null,
             user: null,
             userResetName: ""
         }
     },
     methods:{
-        onSubmit() {
+        onSubmit(data) {
+            this.user.currentpassword= data.currentpassword
+            this.user.newpassword = data.newpassword
+
             this.$axios.$put("/api/administradores/" + this.$route.params.email, this.user).then(response => {
                 this.$router.push("/users")
                 this.$toast.success("Successfully updated Administrador (" + this.user.email + ").")

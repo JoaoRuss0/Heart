@@ -4,7 +4,10 @@
 
 <script>
 import IndexEntities from "../../../components/IndexEntities";
+import profissionaisDeSaudeViewPut from "../../../middleware/profissionaisDeSaudeViewPut";
+
 export default {
+    middleware: profissionaisDeSaudeViewPut,
     components: {IndexEntities},
     data() {
       return {

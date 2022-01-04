@@ -4,11 +4,11 @@
 
 <script>
 import UpdateProfissionalAdministrador from "../../../components/UpdateProfissionalAdministrador";
-import profissionaisDeSaudePut from "../../../middleware/profissionaisDeSaudePut";
+import profissionaisDeSaudeViewPut from "../../../middleware/profissionaisDeSaudeViewPut";
 
 export default {
     components: {UpdateProfissionalAdministrador},
-    middleware: profissionaisDeSaudePut,
+    middleware: profissionaisDeSaudeViewPut,
     data() {
         return {
             user: null,
@@ -16,7 +16,10 @@ export default {
         }
     },
     methods:{
-        onSubmit() {
+        onSubmit(data) {
+            this.user.currentpassword= data.currentpassword
+            this.user.newpassword = data.newpassword
+
             this.$axios.$put("/api/profissionaisdesaude/" + this.$route.params.email, this.user).then(response => {
                 this.$router.push("/users")
                 this.$toast.success("Successfully updated ProfissionalDeSaude (" + this.user.email + ").")

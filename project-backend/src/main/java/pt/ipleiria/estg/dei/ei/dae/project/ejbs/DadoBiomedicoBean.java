@@ -1,9 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.entities.DadoBiomedico;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,9 +15,18 @@ public class DadoBiomedicoBean {
     @PersistenceContext
     EntityManager entityManager;
 
-    public DadoBiomedico create(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) throws MyConstraintViolationException, MyEntityExistsException {
+    public DadoBiomedico create(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) throws MyConstraintViolationException, MyEntityExistsException, MyMaximumMinumumException, MyQualificadoresEmpty {
         if(find(nome) != null) {
             throw new MyEntityExistsException("Found Dado Biomedico with nome = '" + nome + "'.");
+        }
+
+        if(qualificadores.isEmpty())
+        {
+            throw new MyQualificadoresEmpty("At least one qualificador is needed for any dado biomédico.");
+        }
+
+        if(maximo < minimo) {
+            throw new MyMaximumMinumumException("Maximum (" + maximo +") is lower than minimum (" + minimo + ").");
         }
 
         DadoBiomedico dadoBiomedico;
@@ -34,13 +41,22 @@ public class DadoBiomedicoBean {
         return dadoBiomedico;
     }
 
-    public DadoBiomedico update(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public DadoBiomedico update(String nome, String descricao, Double maximo, Double minimo, String unidadeMedida, List<String> qualificadores) throws MyEntityNotFoundException, MyConstraintViolationException, MyMaximumMinumumException, MyQualificadoresEmpty {
         DadoBiomedico dado = findOrFail(nome);
+
+        if(qualificadores.isEmpty())
+        {
+            throw new MyQualificadoresEmpty("At least one qualificador is needed for any dado biomédico.");
+        }
+
+        if(maximo < minimo) {
+            throw new MyMaximumMinumumException("Maximum (" + maximo +") is lower than minimum (" + minimo + ").");
+        }
 
         try {
             dado.setDescricao(descricao);
-            dado.setMinimo(maximo);
-            dado.setMaximo(minimo);
+            dado.setMinimo(minimo);
+            dado.setMaximo(maximo);
             dado.setUnidadeMedida(unidadeMedida);
             dado.setQualificadores(qualificadores);
             entityManager.merge(dado);

@@ -85,7 +85,6 @@ import observacoesPrescricoesPostPutDelete from '../../../../middleware/observac
 
 export default {
     middleware: observacoesPrescricoesPostPutDelete,
-    auth: false,
     data() {
         return {
             options:
@@ -168,6 +167,8 @@ export default {
             this.$axios.$post('/api/prescricoes', this.prescricao).then(() => {
                 this.$toast.success("Prescricao was created with success!")
                 this.$router.push('/prescricoes')
+            }).catch(error => {
+                this.$toast.error("Could not create new prescrição.<\/br>Error: '" + error.response.data + "'")
             })
         },
         onReset() {

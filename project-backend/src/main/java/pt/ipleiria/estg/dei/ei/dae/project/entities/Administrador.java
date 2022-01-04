@@ -1,5 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.project.entities;
 
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyPasswordTooShortException;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -19,7 +21,7 @@ public class Administrador extends User {
     public Administrador() {
     }
 
-    public Administrador(String name, String email, String password) {
+    public Administrador(String name, String email, String password) throws MyPasswordTooShortException {
         super(name, email, password);
     }
 }

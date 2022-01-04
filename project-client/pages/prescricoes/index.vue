@@ -2,11 +2,11 @@
     <b-container>
         <h1>List of Prescrições:</h1>
 
-        <template v-if="prescricoes.length == 0 && prescricoesLoading == false">
-            <p class="text-danger">No prescrições to show.</p>
-        </template>
-        <template v-else>
-            <b-row :no-gutters="true">
+        <b-row :no-gutters="true">
+            <template v-if="prescricoes.length == 0 && prescricoesLoading == false">
+                <p class="text-danger">No prescrições to show.</p>
+            </template>
+            <template v-else>
                 <b-table
                     hover
                     bordered
@@ -25,19 +25,19 @@
                         <Spinner />
                     </template>
                 </b-table>
-            </b-row>
-            <b-row :no-gutters="true">
-                <template v-if="prescricoes.length > 0">
-                    <b-col class="text-right">
-                        <b-button  variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
-                        <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'ProfissionalDeSaude'">
-                            <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
-                            <b-button variant="danger" :disabled="selectedRow.length == 0"  @click="deletePrescricoes(selectedRow[0])">Delete</b-button>
-                        </template>
-                    </b-col>
-                </template>
-            </b-row>
-        </template>
+            </template>
+        </b-row>
+        <b-row :no-gutters="true">
+            <template v-if="prescricoes.length > 0">
+                <b-col class="text-right">
+                    <b-button  variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
+                    <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'ProfissionalDeSaude'">
+                        <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
+                        <b-button variant="danger" :disabled="selectedRow.length == 0"  @click="deletePrescricoes(selectedRow[0])">Delete</b-button>
+                    </template>
+                </b-col>
+            </template>
+        </b-row>
     </b-container>
 </template>
 
@@ -69,6 +69,7 @@ export default {
         },
         deletePrescricoes(row) {
             this.$axios.$delete(`/api/prescricoes/${this.selectedRow[0].id}`).then(response => {
+                this.selectedRow = []
 
                 this.$toast.success("A prescrição foi apagada com sucesso!")
 

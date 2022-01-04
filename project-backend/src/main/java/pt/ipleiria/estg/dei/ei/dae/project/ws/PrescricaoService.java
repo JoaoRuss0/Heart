@@ -4,7 +4,11 @@ import pt.ipleiria.estg.dei.ei.dae.project.dtos.PrescricaoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.DoenteBean;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.PrescricaoBean;
 import pt.ipleiria.estg.dei.ei.dae.project.ejbs.ProfissionalDeSaudeBean;
+import pt.ipleiria.estg.dei.ei.dae.project.ejbs.UserBean;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
+import pt.ipleiria.estg.dei.ei.dae.project.entities.User;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
@@ -17,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
-import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,9 @@ public class PrescricaoService {
 
     @EJB
     DoenteBean doenteBean;
+
+    @EJB
+    UserBean userBean;
 
     @EJB
     ProfissionalDeSaudeBean profissionalDeSaudeBean;
@@ -50,19 +56,29 @@ public class PrescricaoService {
 
             return Response.ok(toDTOs(profissionalDeSaudeBean.findOrFail(principal.getName()).getPrescricoes())).build();
         }
-        return Response.ok(toDTOs(prescricaoBean.getAll())).build();
+        if((securityContext.isUserInRole("Administrador"))){
+            return Response.ok(toDTOs(prescricaoBean.getAll())).build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET
     @Path("/{id}")
-    public Response getDadoBiomedico(@PathParam("id") int id) throws MyEntityNotFoundException {
+    public Response get(@PathParam("id") int id) throws MyEntityNotFoundException {
+        Principal principal = securityContext.getUserPrincipal();
         Prescricao prescricao = prescricaoBean.findOrFail(id);
+
+        if(principal == null)
+        {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
         return Response.ok(toDTO(prescricao)).build();
     }
 
     @POST
     @Path("/")
-    public Response createNewPrescricao(PrescricaoDTO prescricaoDTO) throws MyConstraintViolationException, MyParseException, MyEntityNotFoundException {
+    public Response create(PrescricaoDTO prescricaoDTO) throws MyConstraintViolationException, MyParseException, MyEntityNotFoundException {
         Prescricao prescricao = prescricaoBean.create(
                 prescricaoDTO.getComentario(),
                 prescricaoDTO.getDoenteEmail(),
@@ -77,8 +93,8 @@ public class PrescricaoService {
 
     @PUT
     @Path("/{id}")
-    public Response updatePrescricao(@PathParam("id") int id, PrescricaoDTO prescricaoDTO) throws MyEntityNotFoundException, MyParseException, MyConstraintViolationException {
-        prescricaoBean.updatePrescricao(id,
+    public Response update(@PathParam("id") int id, PrescricaoDTO prescricaoDTO) throws MyEntityNotFoundException, MyParseException, MyConstraintViolationException {
+        prescricaoBean.update(id,
                 prescricaoDTO.getComentario(),
                 prescricaoDTO.getDataInicio(),
                 prescricaoDTO.getDataFinal(),
@@ -90,7 +106,7 @@ public class PrescricaoService {
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") int id) throws MyEntityNotFoundException, MyEntityExistsException {
-        prescricaoBean.deletePrescricao(id);
+        prescricaoBean.delete(id);
 
         if (prescricaoBean.find(id) != null) {
             throw new MyEntityExistsException("Error deleting prescrição, prescrição still exists.");
@@ -106,7 +122,7 @@ public class PrescricaoService {
     private PrescricaoDTO toDTO(Prescricao prescricao) {
         return new PrescricaoDTO(
                 prescricao.getId(),
-                prescricao.getCausa(),
+                prescricao.getComentario(),
                 prescricao.getDoente().getEmail(),
                 prescricao.getDataInicio(),
                 prescricao.getDataFinal(),
@@ -114,9 +130,6 @@ public class PrescricaoService {
                 prescricao.getProfissionalDeSaude(),
                 prescricao.getObservacao()
         );
-
-
-
     }
 }
 

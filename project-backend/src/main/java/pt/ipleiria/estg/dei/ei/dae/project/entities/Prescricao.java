@@ -2,10 +2,8 @@ package pt.ipleiria.estg.dei.ei.dae.project.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.List;
+
 @Entity
 @Table(name = "Prescricoes")
 @NamedQueries({
@@ -20,7 +18,7 @@ public class Prescricao {
     private int id;
 
     @NotNull
-    private String causa;
+    private String comentario;
 
     @NotNull
     private GregorianCalendar dataInicio;
@@ -52,84 +50,67 @@ public class Prescricao {
     @JoinColumn(name = "OBSERVACAO_ID")
     private Observacao observacao;
 
+    public Prescricao() {
+    }
 
-    public Prescricao(String causa, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao, Doente doente, ProfissionalDeSaude profissionalDeSaude, Observacao observacao) {
-        this.causa = causa;
+    public Prescricao(String comentario, GregorianCalendar dataInicio, GregorianCalendar dataFinal, Prescricao.tipoPrescricao tipoPrescricao, Doente doente, ProfissionalDeSaude profissionalDeSaude, Observacao observacao) {
+        this.comentario = comentario;
         this.dataInicio = dataInicio;
         this.dataFinal = dataFinal;
         this.tipoPrescricao = tipoPrescricao;
         this.doente = doente;
         this.profissionalDeSaude = profissionalDeSaude;
         this.observacao = observacao;
-
     }
 
-
-
-    public Prescricao() {
-    }
-
-
+    /*Getters*/
     public int getId() {
         return id;
     }
-
-    public void setId(int id) {
-        this.id = id;
+    public String getComentario() {
+        return comentario;
     }
-
-    public String getCausa() {
-        return causa;
+    public GregorianCalendar getDataInicio() {
+        return dataInicio;
     }
-
+    public GregorianCalendar getDataFinal() {
+        return dataFinal;
+    }
+    public Prescricao.tipoPrescricao getTipoPrescricao() {
+        return tipoPrescricao;
+    }
+    public Doente getDoente() {
+        return doente;
+    }
+    public ProfissionalDeSaude getProfissionalDeSaude() {
+        return profissionalDeSaude;
+    }
     public Observacao getObservacao() {
         return observacao;
     }
 
-    public void setCausa(String causa) {
-        this.causa = causa;
+    /*Setters*/
+    public void setId(int id) {
+        this.id = id;
     }
-
-    public Doente getDoente() {
-        return doente;
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
-
-    public void setDoente(Doente doente) {
-        this.doente = doente;
-    }
-
-    public ProfissionalDeSaude getProfissionalDeSaude() {
-        return profissionalDeSaude;
-    }
-
-    public void setProfissionalDeSaude(ProfissionalDeSaude profissionalDeSaude) {
-        this.profissionalDeSaude = profissionalDeSaude;
-    }
-
-    public GregorianCalendar getDataInicio() {
-        return dataInicio;
-    }
-
-    public GregorianCalendar getDataFinal() {
-        return dataFinal;
-    }
-
-    public Prescricao.tipoPrescricao getTipoPrescricao() {
-        return tipoPrescricao;
-    }
-
     public void setDataInicio(GregorianCalendar dataInicio) {
         this.dataInicio = dataInicio;
     }
-
     public void setDataFinal(GregorianCalendar dataFinal) {
         this.dataFinal = dataFinal;
     }
-
     public void setTipoPrescricao(Prescricao.tipoPrescricao tipoPrescricao) {
         this.tipoPrescricao = tipoPrescricao;
     }
-
+    public void setDoente(Doente doente) {
+        this.doente = doente;
+    }
+    public void setProfissionalDeSaude(ProfissionalDeSaude profissionalDeSaude) {
+        this.profissionalDeSaude = profissionalDeSaude;
+    }
     public void setObservacao(Observacao observacao) {
         this.observacao = observacao;
     }
