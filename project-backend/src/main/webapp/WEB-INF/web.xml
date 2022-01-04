@@ -10,37 +10,93 @@
 
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>Dados Biomedicos</web-resource-name>
-            <url-pattern>/api/dadosBiomedicos/*</url-pattern>
+            <web-resource-name>Dados Biomedicos Get All</web-resource-name>
+            <url-pattern>/api/dadosbiomedicos</url-pattern>
             <http-method>GET</http-method>
-            <http-method>POST</http-method>
-            <http-method>PUT</http-method>
-            <http-method>DELETE</http-method>
-        </web-resource-collection>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Prescricoes</web-resource-name>
-            <url-pattern>/api/prescricoes/*</url-pattern>
-
-            <http-method>PUT</http-method>
-            <http-method>DELETE</http-method>
         </web-resource-collection>
         <auth-constraint>
-
+            <role-name>Administrador</role-name>
             <role-name>ProfissionalDeSaude</role-name>
         </auth-constraint>
     </security-constraint>
 
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>Prescricoes</web-resource-name>
+            <web-resource-name>Dados Biomedicos Get Specific</web-resource-name>
+            <url-pattern>/api/dadosbiomedicos/*</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Administrador</role-name>
+            <role-name>ProfissionalDeSaude</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Dados Biomedicos Post</web-resource-name>
+            <url-pattern>/api/dadosbiomedicos</url-pattern>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Administrador</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Dados Biomedicos Put and Delete</web-resource-name>
+            <url-pattern>/api/dadosbiomedicos/*</url-pattern>
+            <http-method>PUT</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Administrador</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Observacoes</web-resource-name>
+            <url-pattern>/api/observacoes</url-pattern>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>ProfissionalDeSaude</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Observacoes Put and Delete</web-resource-name>
+            <url-pattern>/api/observacoes/*</url-pattern>
+            <http-method>PUT</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>ProfissionalDeSaude</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Prescricoes Put and Delete</web-resource-name>
+            <url-pattern>/api/prescricoes/*</url-pattern>
+            <http-method>PUT</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>ProfissionalDeSaude</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Prescricoes Post</web-resource-name>
             <url-pattern>/api/prescricoes/</url-pattern>
             <http-method>POST</http-method>
         </web-resource-collection>
         <auth-constraint>
-
             <role-name>ProfissionalDeSaude</role-name>
         </auth-constraint>
     </security-constraint>

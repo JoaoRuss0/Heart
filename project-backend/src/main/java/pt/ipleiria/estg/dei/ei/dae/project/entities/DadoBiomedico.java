@@ -33,16 +33,6 @@ public class DadoBiomedico {
     @ElementCollection
     private List<String> qualificadores;
 
-
-
-    //CRIAR OBSERVAÇÃO?  -> ligação entre doente e dado biomedico
-    // quem?
-    // quando?
-    // a quem?
-    // valor Quantitativo --> Tipo ObservaçaoVALOR
-    // valor Qualitativo -->Tipo ObservaçaoCategoria
-
-
     public DadoBiomedico() {
     }
 

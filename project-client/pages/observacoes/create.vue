@@ -1,133 +1,190 @@
 <template>
     <b-container>
-        <h1 class="mb-4 mt-4">
-            Criar Observação
-        </h1>
-        <b-form @submit.prevent="onSubmit" :disabled="!isFormValid">
+        <h1 class="mb-4 mt-4">New Observação:</h1>
+        <b-form @submit.prevent="onSubmit" @reset.prevent="onReset" :disabled="!isFormValid">
+            <b-form-group
+                id="fieldset-doente-email"
+                label="Doente Email Address:"
+                label-for="inputDoenteEmail"
+                valid-feedback="Done!"
+                :state="stateDoenteEmail"
+            >
+                <b-form-select id="inputDoenteEmail" v-model="observacao.doenteEmail" :state="stateDoenteEmail">
+                    <template v-for="doente in doentes" >
+                        <b-form-select-option :value="doente.email">{{doente.email}}</b-form-select-option>
+                    </template>
+                </b-form-select>
+            </b-form-group>
 
-            <!-- Email Doente -->
-            <b-row class="mb-3">
-                <b-col><strong>Email do Doente:</strong></b-col>
-                <b-col>
-                    <select v-model="observacao.doenteEmail" required>
-                        <option v-for="doente in this.doentes" >
-                            {{doente.email}}
-                        </option>
-                    </select>
-                </b-col>
-            </b-row>
+            <b-form-group
+                id="fieldset-dado-biomedico"
+                label="Dado Biomédico:"
+                label-for="inputDadoBiomedico"
+                valid-feedback="Done!"
+                :state="stateNomeDadoBiomedico"
+            >
+                <b-form-select id="inputDadoBiomedico" v-model="observacao.nomeDadoBiomedico" @change="changeDadoBiomedico" :state="stateNomeDadoBiomedico">
+                    <template v-for="dado in this.dadosBiomedicos" >
+                        <b-form-select-option :value="dado.nome">{{dado.nome}}</b-form-select-option>
+                    </template>
+                </b-form-select>
+            </b-form-group>
 
-            <!-- Dado Biomedico -->
-            <b-row class="mb-3">
-                <b-col><strong>Dado Biomédico:</strong></b-col>
-                <b-col>
-                    <select v-model="observacao.nomeDadoBiomedico" @change="updateQualifiers()" required>
-                        <option v-for="dado in this.dados">
-                            {{dado.nome}}
-                        </option>
-                    </select>
-                </b-col>
-            </b-row>
+            <b-form-group
+                id="fieldset-data"
+                label="Date:"
+                label-for="inputData"
+                valid-feedback="Done!"
+            >
+                <b-form-datepicker disabled id="inputData" v-model="observacao.data"></b-form-datepicker>
+            </b-form-group>
 
-            <!-- Data -->
-            <b-row class="mb-3">
-                <b-col><strong>Data:</strong></b-col>
-                <b-col>
-                    <b-form-datepicker id="data" v-model="observacao.data" class="mb-2" aria-required="true"></b-form-datepicker>
-                </b-col>
-            </b-row>
+            <template v-if="observacao.nomeDadoBiomedico != null && dadoBiomedico != null">
+                <b-form-group
+                    id="fieldset-valor-quantitativo"
+                    label="Quantitative Value:"
+                    label-for="inputValorQuantitativo"
+                    valid-feedback="Done!"
+                    :invalid-feedback="invalidFeedbackQuantitativeValue"
+                    :state="stateQuantitativeValue"
+                >
+                    <b-form-input
+                        id="inputValorQuantitativo"
+                        type="number"
+                        :min="dadoBiomedico.minimo"
+                        :max="dadoBiomedico.maximo"
+                        v-model="observacao.valorQuantitativo"
+                        :state="stateQuantitativeValue"
+                    >
+                    </b-form-input>
+                </b-form-group>
 
-            <!-- Valor Quantitativo -->
-            <b-row class="mb-3">
-                <b-col><strong>Valor:</strong></b-col>
-                <b-col><b-input v-model="observacao.valorQuantitativo" type="number" step="any" required/></b-col>
-            </b-row>
-            <b-row><p v-if="observacao.valorQuantitativo>dadoBiomedico.maximo || observacao.valorQuantitativo<dadoBiomedico.minimo" style="color:red"> Valor tem que estar entre {{dadoBiomedico.minimo}} e {{dadoBiomedico.maximo}}</p></b-row>
+                <b-form-group
+                    id="fieldset-valor-qualitativo"
+                    label="Qualitative Value:"
+                    label-for="inputValorQualitativo"
+                    valid-feedback="Done!"
+                    :state="stateQualitativeValue"
+                >
+                    <b-form-select id="inputValorQuanlitativo" v-model="observacao.valorQualitativo" :state="stateQualitativeValue">
+                        <template v-for="qualificador in this.dadoBiomedico.qualificadores" >
+                            <b-form-select-option :value="qualificador">{{qualificador}}</b-form-select-option>
+                        </template>
+                    </b-form-select>
+                </b-form-group>
+            </template>
 
-
-            <!-- Valor Qualitativo -->
-            <div v-if="observacao.nomeDadoBiomedico!=null">
-            <b-row class="mb-3">
-                <b-col><strong>Valor Qualitativo:</strong></b-col>
-                <b-col>
-                    <select v-model="observacao.valorQualitativo" required>
-                        <option v-for="qualificador in this.dadoBiomedico.qualificadores" >
-                            {{qualificador}}
-                        </option>
-                    </select>
-                </b-col>
-            </b-row>
+            <div class="text-right">
+                <b-button variant="primary" type="submit" :disabled="!isFormValid">Create</b-button>
+                <b-button variant="danger" type="reset">Reset</b-button>
             </div>
-
-
-
-            <!-- Botões -->
-            <b-row class="mb-3">
-                <b-col>
-                    <nuxt-link to="/observacoes">
-                        <button class="btn btn-warning">Return</button>
-                    </nuxt-link>
-                </b-col>
-
-                <b-col>
-                    <b-button class="btn btn-primary" @click="reset()">RESET</b-button>
-                    <b-button variant="primary" type="submit" :disabled="!isFormValid">Create</b-button>
-                </b-col>
-            </b-row>
         </b-form>
     </b-container>
 </template>
 
 <script>
+import observacoesPrescricoesPostPutDelete from "../../middleware/observacoesPrescricoesPostPutDelete";
+
 export default {
+    middleware: observacoesPrescricoesPostPutDelete,
     data () {
+        let now = new Date()
+        let today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
         return {
             doentes: [],
-            dados:[],
-            dadoBiomedico: [],
+            dadosBiomedicos:[],
+            dadoBiomedico: null,
             observacao: {
                 doenteEmail: null,
                 profissionalDeSaudeEmail: this.$auth.user.sub,
                 nomeDadoBiomedico: null,
-                data: null,
+                data: today,
                 valorQuantitativo: null,
                 valorQualitativo: null,
-            },
+            }
         }
     },
     created () {
         this.$axios.$get('/api/dadosbiomedicos').then(dados => {
-            this.dados = dados
-        })
-        this.$axios.$get('/api/doentes').then(doentes => {
-            this.doentes = doentes
+            this.dadosBiomedicos = dados
+        }).catch(error => {
+            this.$toast.error("Could not get available dados biomedicos.")
+            this.$router.push("/observacoes")
         })
 
+        this.$axios.$get('/api/doentes').then(doentes => {
+            this.doentes = doentes
+        }).catch(error => {
+            this.$toast.error("Could not get list of doentes.")
+            this.$router.push("/observacoes")
+        })
     },
     computed:{
-        stateMinimumMaximum() {
-            return (!(this.observacao['valorQuantitativo']>this.dadoBiomedico.maximo || this.observacao['valorQuantitativo']<this.dadoBiomedico.minimo))
+        stateDoenteEmail() {
+            if(!this.observacao.doenteEmail)
+            {
+                return null
+            }
+            return this.observacao.doenteEmail != null
+        },
+        stateNomeDadoBiomedico() {
+            if(!this.observacao.nomeDadoBiomedico)
+            {
+                return null
+            }
+            return this.observacao.nomeDadoBiomedico != null
+        },
+        stateDate() {
+            if(!this.observacao.data)
+            {
+                return null
+            }
+            return this.observacao.data != null
+        },
+        stateQuantitativeValue() {
+            if(!this.observacao.valorQuantitativo) {
+                return null
+            }
+            return this.observacao.valorQuantitativo <= this.dadoBiomedico.maximo && this.observacao.valorQuantitativo >= this.dadoBiomedico.minimo
+        },
+        invalidFeedbackQuantitativeValue() {
+            if(!this.stateQuantitativeValue){
+                return this.dadoBiomedico.nome + "'s value has to be between " + this.dadoBiomedico.minimo + " and " + this.dadoBiomedico.maximo + "."
+            }
+            return ""
+        },
+        stateQualitativeValue() {
+            if(!this.observacao.valorQualitativo)
+            {
+                return null
+            }
+            return this.observacao.valorQualitativo != null
         },
         isFormValid() {
-            return (this.stateMinimumMaximum && this.observacao.data != null)
+            return this.stateDoenteEmail && this.stateNomeDadoBiomedico && this.stateDate && this.stateQualitativeValue && this.stateQuantitativeValue
         }
     },
     methods: {
-        reset(){
-            this.observacao.valorQuantitativo = 0
-            this.nomeDadoBiomedico = null
-        },
-        updateQualifiers(){
-            this.$axios.$get('api/dadosbiomedicos/' + this.observacao['nomeDadoBiomedico']).then((dadoBiomedico) => {
-                this.dadoBiomedico = dadoBiomedico
-            })
+        changeDadoBiomedico(){
+            let index = this.dadosBiomedicos.findIndex(dadoBiomedico => dadoBiomedico.nome == this.observacao.nomeDadoBiomedico)
+            this.dadoBiomedico = this.dadosBiomedicos[index]
+            this.observacao.valorQuantitativo = null
+            this.observacao.valorQualitativo = null
         },
         onSubmit() {
-            this.$axios.$post('api/observacoes/', this.observacao)
-            .then(() => {
+            this.$axios.$post('api/observacoes/', this.observacao).then(() => {
+                this.$toast.success("New observação was created successfully!")
                 this.$router.push('/observacoes')
-                alert("Observacao criada!")
+            }).catch(error => {
+                this.$toast.error("Could not create new observação.<\/br>Error: '" + error.response.data + "'")
             })
+        },
+        onReset() {
+            this.observacao.doenteEmail = null
+            this.observacao.nomeDadoBiomedico = null
+            this.observacao.valorQualitativo = null
+            this.observacao.valorQuantitativo = null
         }
     }
 }

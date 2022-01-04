@@ -1,6 +1,5 @@
 package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
-import pt.ipleiria.estg.dei.ei.dae.project.entities.Administrador;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityExistsException;

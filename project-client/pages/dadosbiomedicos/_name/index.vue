@@ -1,24 +1,23 @@
 <template>
-    <div v-if="this.$auth.user.groups[0] != 'Doente'">
-        <b-container fluid="sm">
-            <div v-if="dadoBiomedico">
-                <h1 class="mb-4 mt-4">
-                    Nome "{{ dadoBiomedico['nome'] }}"
-                </h1>
-                <b-row class="mb-3">
-                    <b-col><strong>Descrição:</strong></b-col> <b-col>{{ dadoBiomedico['descricao'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Valor mínimo:</strong></b-col> <b-col>{{ dadoBiomedico['minimo'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Valor máximo:</strong></b-col> <b-col>{{ dadoBiomedico['maximo'] }}</b-col>
-                </b-row>
-                <b-row class="mb-3">
-                    <b-col><strong>Unidade de medida:</strong></b-col> <b-col>{{ dadoBiomedico['unidadeMedida'] }}</b-col>
-                </b-row>
+    <b-container fluid="sm">
+        <div v-if="dadoBiomedico">
+            <h1 class="mb-4 mt-4">
+                Nome "{{ dadoBiomedico['nome'] }}"
+            </h1>
+            <b-row class="mb-3">
+                <b-col><strong>Descrição:</strong></b-col> <b-col>{{ dadoBiomedico['descricao'] }}</b-col>
+            </b-row>
+            <b-row class="mb-3">
+                <b-col><strong>Valor mínimo:</strong></b-col> <b-col>{{ dadoBiomedico['minimo'] }}</b-col>
+            </b-row>
+            <b-row class="mb-3">
+                <b-col><strong>Valor máximo:</strong></b-col> <b-col>{{ dadoBiomedico['maximo'] }}</b-col>
+            </b-row>
+            <b-row class="mb-3">
+                <b-col><strong>Unidade de medida:</strong></b-col> <b-col>{{ dadoBiomedico['unidadeMedida'] }}</b-col>
+            </b-row>
 
-                <b-row class="mb-3">
+            <b-row class="mb-3">
                 <b-col><strong>Lista de Qualificadores:</strong></b-col>
                 <table id="app" class="display table">
                     <tbody>
@@ -27,23 +26,24 @@
                     </tr>
                     </tbody>
                 </table>
-                </b-row>
+            </b-row>
 
-                <b-row class="mb-3">
-                    <b-col>
-                        <nuxt-link to="/dadosbiomedicos">
-                            <button class="btn btn-warning">Return</button>
-                        </nuxt-link>
-                    </b-col>
-                </b-row>
-            </div>
-        </b-container>
-    </div>
-    <div v-else><h1>Sem acesso a esta página</h1></div>
+            <b-row class="mb-3">
+                <b-col>
+                    <nuxt-link to="/dadosbiomedicos">
+                        <button class="btn btn-warning">Return</button>
+                    </nuxt-link>
+                </b-col>
+            </b-row>
+        </div>
+    </b-container>
 </template>
 
 <script>
+import dadosBiomedicosIndex from "../../../middleware/dadosBiomedicosIndex";
+
 export default {
+    middleware: dadosBiomedicosIndex,
     data () {
         return {
             dadoBiomedico: null,

@@ -16,36 +16,17 @@
                                 <nuxt-link class="nav-link" to="/doentes">Doentes</nuxt-link>
                             </li>
                         </template>
-                        <template v-if="$store.state.auth.user.groups[0] == 'Doente'">
+                        <template v-if="$store.state.auth.user.groups[0] != 'Doente'">
                             <li class="nav-item">
-                                <nuxt-link class="nav-link" to="/prescricoes">Minhas Prescrições</nuxt-link>
+                                <nuxt-link class="nav-link" to="/dadosbiomedicos">Dados Biomedicos</nuxt-link>
                             </li>
                         </template>
-                        <template v-if="$store.state.auth.user.groups[0] == 'ProfissionalDeSaude'">
-                            <li class="nav-item">
-                                <nuxt-link class="nav-link" to="/prescricoes">Prescrições Prescritas</nuxt-link>
-                            </li>
-                        </template>
-                        <template v-if="$store.state.auth.user.groups[0] == 'Doente'">
-                            <li class="nav-item">
-                                <nuxt-link class="nav-link" to="/observacoes">Minhas Observacoes</nuxt-link>
-                            </li>
-                        </template>
-                        <template v-if="$store.state.auth.user.groups[0] == 'ProfissionalDeSaude'">
-                            <li class="nav-item">
-                                <nuxt-link class="nav-link" to="/observacoes">Observacoes meus doentes</nuxt-link>
-                            </li>
-                        </template>
-                        <template v-if="$store.state.auth.user.groups[0] == 'Administrador'">
-                            <li class="nav-item">
-                                <nuxt-link class="nav-link" to="/observacoes">Todas as Observações</nuxt-link>
-                            </li>
-                        </template>
-                        <template v-if="$store.state.auth.user.groups[0] == 'Administrador'">
-                            <li class="nav-item">
-                                <nuxt-link class="nav-link" to="/prescricoes">Todas as Prescricoes</nuxt-link>
-                            </li>
-                        </template>
+                        <li class="nav-item">
+                            <nuxt-link class="nav-link" to="/observacoes">Observações</nuxt-link>
+                        </li>
+                        <li class="nav-item">
+                            <nuxt-link class="nav-link" to="/prescricoes">Prescrições</nuxt-link>
+                        </li>
                     </template>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
@@ -75,6 +56,7 @@
 </template>
 <script>
 export default {
+    name: "default",
     methods: {
         signOut() {
             this.$auth.logout()

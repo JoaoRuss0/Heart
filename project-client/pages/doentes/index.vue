@@ -1,42 +1,51 @@
 <template>
     <b-container>
-        <b-row :no-gutters="true">
-            <h1>Doentes:</h1>
-            <b-table
-                hover
-                bordered
-                selectable
-                no-border-collapse
-                headVariant="dark"
-                primary-key="email"
-                select-mode="single"
-                selected-variant="primary"
-                @row-selected="onRowSelected"
-                :items="doentes"
-                :fields="fields"
-                :busy="doentesLoading"
-            >
-                <template #table-busy>
-                    <spinner />
-                </template>
-            </b-table>
-        </b-row>
+        <h1>List of Doentes:</h1>
 
-        <b-row :no-gutters="true">
-            <b-col class="text-left">
-                <b-button variant="success" @click="pushRoute('create', null)">Create</b-button>
-            </b-col>
-            <b-col class="text-right">
-                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute('view', selectedRow[0])">Details</b-button>
-                <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute('update', selectedRow[0])">Update</b-button>
-                <b-button variant="danger"  :disabled="selectedRow.length == 0" @click="deleteDoente">Delete</b-button>
-            </b-col>
-        </b-row>
+        <template v-if="doentes.length == 0 && doentesLoading == false">
+            <p class="text-danger">No observações to show.</p>
+        </template>
+        <template v-else>
+            <b-row :no-gutters="true">
+                <b-table
+                    hover
+                    bordered
+                    selectable
+                    no-border-collapse
+                    headVariant="dark"
+                    primary-key="email"
+                    select-mode="single"
+                    selected-variant="primary"
+                    @row-selected="onRowSelected"
+                    :items="doentes"
+                    :fields="fields"
+                    :busy="doentesLoading"
+                >
+                    <template #table-busy>
+                        <Spinner />
+                    </template>
+                </b-table>
+            </b-row>
+
+            <b-row :no-gutters="true">
+                <b-col class="text-left">
+                    <b-button variant="success" @click="pushRoute('create', null)">Create</b-button>
+                </b-col>
+                <b-col class="text-right">
+                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute('view', selectedRow[0])">Details</b-button>
+                    <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute('update', selectedRow[0])">Update</b-button>
+                    <b-button variant="danger"  :disabled="selectedRow.length == 0" @click="deleteDoente(selectedRow[0])">Delete</b-button>
+                </b-col>
+            </b-row>
+        </template>
     </b-container>
 </template>
 
 <script>
+import Spinner from "../../components/Spinner";
+
 export default {
+    components: {Spinner},
     data() {
         return {
             doentes: [],
@@ -64,17 +73,21 @@ export default {
 
             this.$router.push("doentes/" + row.email + "/" + ((operation == "view") ? '' : operation))
         },
-        deleteDoente() {
-            this.$axios.$delete(`/api/doentes/${this.selectedRow[0].email}`).then(response => {
-                this.$auth.
-                    //reload users list
-                    this.$axios.$get('/api/users/').then(users => {
+        deleteDoente(row) {
+            this.$axios.$delete(`/api/doentes/${row.email}`).then(response => {
+
+                this.$toast.success(`Deleted doente (${row.email}) with success!`)
+
+                //reload users list
+                this.$axios.$get('/api/users/').then(users => {
                     this.users = users
                     this.usersLoading = false
-                }).catch( error => console.log(error))
 
-                this.$toast.show(`Deleted user (${selectedRow[0].email}) with success!`)
-            }).catch(error => console.log(error))
+                }).catch( error => this.$toast.error("Error loading list of doentes."))
+
+            }).catch(error => {
+                this.$toast.error("Could not delete doente (" + row.email + ").<\/br>Error: '" + error.response.data + "'")
+            })
         }
     }
 }

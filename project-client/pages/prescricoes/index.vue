@@ -1,7 +1,11 @@
 <template>
     <b-container>
-        <h1>Lista de Prescrições:</h1>
-        <template v-if="prescricoes.length > 0">
+        <h1>List of Prescrições:</h1>
+
+        <template v-if="prescricoes.length == 0 && prescricoesLoading == false">
+            <p class="text-danger">No prescrições to show.</p>
+        </template>
+        <template v-else>
             <b-row :no-gutters="true">
                 <b-table
                     hover
@@ -18,33 +22,34 @@
                     :busy="prescricoesLoading"
                 >
                     <template #table-busy>
-                        <spinner />
+                        <Spinner />
                     </template>
                 </b-table>
             </b-row>
+            <b-row :no-gutters="true">
+                <template v-if="prescricoes.length > 0">
+                    <b-col class="text-right">
+                        <b-button  variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
+                        <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'ProfissionalDeSaude'">
+                            <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
+                            <b-button variant="danger" :disabled="selectedRow.length == 0"  @click="deletePrescricoes(selectedRow[0])">Delete</b-button>
+                        </template>
+                    </b-col>
+                </template>
+            </b-row>
         </template>
-        <template v-else>
-            <p class="text-danger">Não há prescrições para listar</p>
-        </template>
-        <b-row :no-gutters="true">
-             <template v-if="prescricoes.length > 0">
-                 <b-col class="text-right">
-                    <b-button  variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/`)">Details</b-button>
-                     <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/${selectedRow[0].id}/update`)">Update</b-button>
-                     <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="danger" :disabled="selectedRow.length == 0"  @click="deletePrescricoes()">Delete</b-button>
-                 </b-col>
-             </template>
-        </b-row>
-
     </b-container>
 </template>
 
 <script>
+import Spinner from "../../components/Spinner";
+
 export default {
+    components: {Spinner},
     data() {
         return {
             prescricoes: [],
-            fields: ["id", "causa", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao", "profissionalDeSaudeEmail", "observacaoID"],
+            fields: ["id", "comentario", "doenteEmail", "dataInicio", "dataFinal", "tipoPrescricao", "profissionalDeSaudeEmail", "observacaoID"],
             selectedRow: [],
             prescricoesLoading: true
         }
@@ -62,15 +67,22 @@ export default {
         pushRoute(route) {
             this.$router.push(route)
         },
-        deletePrescricoes() {
-
+        deletePrescricoes(row) {
             this.$axios.$delete(`/api/prescricoes/${this.selectedRow[0].id}`).then(response => {
+
                 this.$toast.success("A prescrição foi apagada com sucesso!")
+
+                //reload prescrições list
                 this.$axios.$get('/api/prescricoes').then(prescricoes => {
+                    this.prescricoesLoading = true
                     this.prescricoes = []
                     this.prescricoes.push(...prescricoes)
-                })
-            }).catch(error => console.log(error))
+                    this.prescricoesLoading = false
+                }).catch( error => this.$toast.error("Error loading list of precrições."))
+
+            }).catch(error => {
+                this.$toast.error("Could not delete prescrição (" + row.id + ").<\/br>Error: '" + error.response.data + "'")
+            })
         },
     }
 }

@@ -1,70 +1,68 @@
 <template>
-    <div>
-        <b-container>
-            <h1>Lista de Observações:</h1>
-            <template v-if="observacoes.length > 0">
-                <b-row :no-gutters="true">
-                    <b-table
-                        hover
-                        bordered
-                        selectable
-                        no-border-collapse
-                        headVariant="dark"
-                        primary-key="email"
-                        select-mode="single"
-                        selected-variant="primary"
-                        @row-selected="onRowSelected"
-                        :items="observacoes"
-                        :fields="fields"
+    <b-container>
+        <h1>List of Observações:</h1>
 
-                    >
-                        <template #table-busy>
-                            <spinner />
-                        </template>
-                    </b-table>
-                </b-row>
-            </template>
-            <template v-else>
-                <p class="text-danger">Não há observacoes para listar</p>
-            </template>
+        <template v-if="observacoes.length == 0 && observacoesLoading == false">
+            <p class="text-danger">No observações to show.</p>
+        </template>
+        <template v-else>
+            <b-row :no-gutters="true">
+                <b-table
+                    hover
+                    bordered
+                    selectable
+                    no-border-collapse
+                    headVariant="dark"
+                    primary-key="email"
+                    select-mode="single"
+                    selected-variant="primary"
+                    @row-selected="onRowSelected"
+                    :items="observacoes"
+                    :fields="fields"
+                    :busy="observacoesLoading"
+                >
+                    <template #table-busy>
+                        <Spinner/>
+                    </template>
+                </b-table>
+            </b-row>
+
             <b-row :no-gutters="true">
                 <b-col class="text-left">
-                    <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude' " variant="success" @click="pushRoute(`/observacoes/create/`)">Criar Observação</b-button>
+                    <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] =='ProfissionalDeSaude'">
+                        <b-button variant="success" @click="pushRoute(`/observacoes/create/`)">Create Observação</b-button>
+                        <b-button variant="success" :disabled="selectedRow.length == 0" @click="pushRoute(`/prescricoes/observacoes/${selectedRow[0].id}/create`)">Create Prescrição</b-button>
+                    </template>
+                </b-col>
+                <b-col class="text-right">
+                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/observacoes/${selectedRow[0].id}`)">Details</b-button>
+                    <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] =='ProfissionalDeSaude'">
+                        <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/observacoes/${selectedRow[0].id}/update`)">Update</b-button>
+                        <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteObservacao(selectedRow[0])">Delete</b-button>
+                    </template>
                 </b-col>
             </b-row>
-            <template v-if="observacoes.length > 0">
-                <b-col class="text-right">
-
-                        <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="success" @click="pushRoute(`/prescricoes/observacoes/${selectedRow[0].id}/create`)">Criar Prescrição</b-button>
-
-                    <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude' " variant="danger" :disabled="selectedRow.length == 0" @click="deleteObs()">Apagar</b-button>
-                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/observacoes/${selectedRow[0].id}`)">Detalhes</b-button>
-                    <b-button v-if="this.$auth.user.groups[0] =='ProfissionalDeSaude'" variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/observacoes/${selectedRow[0].id}/update`)">Atualizar</b-button>
-                </b-col>
-            </template>
-
-        </b-container>
-    </div>
-
+        </template>
+    </b-container>
 </template>
 
-
-
 <script>
+import Spinner from "../../components/Spinner";
 
 export default {
-
+    components: {Spinner},
     data() {
         return {
             observacoes: [],
             fields: ["id","doenteEmail", "profissionalDeSaudeEmail", "nomeDadoBiomedico", "data", "valorQuantitativo", "valorQualitativo"],
             selectedRow:[],
+            observacoesLoading: true
         }
     },
     created() {
-
         this.$axios.$get('/api/observacoes').then(observacoes => {
             this.observacoes = observacoes
+            this.observacoesLoading = false
         })
     },
     methods: {
@@ -75,17 +73,23 @@ export default {
             this.$router.push(route)
         },
 
-        deleteObs() {
-            this.$axios.$delete(`/api/observacoes/${this.selectedRow[0].id}`).then(response => {
-            this.$toast.success("A observação foi apagada com sucesso!")
+        deleteObservacao(row) {
+            this.$axios.$delete(`/api/observacoes/${row.id}`).then(response => {
+
+                this.$toast.success("A observação foi apagada com sucesso!")
+
+                //reload observações list
                 this.$axios.$get('/api/observacoes').then(observacoes => {
+                    this.observacoesLoading = true
                     this.observacoes = []
                     this.observacoes.push(...observacoes)
-                })
-            }).catch(error => console.log(error))
+                    this.observacoesLoading = false
+                }).catch( error => this.$toast.error("Error loading list of observações."))
+
+            }).catch(error => {
+                this.$toast.error("Could not delete observação (" + row.id + ").<\/br>Error: '" + error.response.data + "'")
+            })
         }
-
-
     }
 }
 </script>

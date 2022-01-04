@@ -4,10 +4,11 @@
 
 <script>
 import UpdateProfissionalAdministrador from "../../../components/UpdateProfissionalAdministrador";
-import administradorRoutes from "../../../middleware/administradorRoutes";
+import profissionaisDeSaudePut from "../../../middleware/profissionaisDeSaudePut";
+
 export default {
     components: {UpdateProfissionalAdministrador},
-    middleware: ["administradorRoutes"],
+    middleware: profissionaisDeSaudePut,
     data() {
         return {
             user: null,

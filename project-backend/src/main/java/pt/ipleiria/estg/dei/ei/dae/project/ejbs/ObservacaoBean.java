@@ -2,15 +2,13 @@ package pt.ipleiria.estg.dei.ei.dae.project.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.project.dtos.ObservacaoDTO;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.*;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyValueNotFoundException;
-import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyValueOutOfBoundsException;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.NotFoundException;
+import javax.validation.ConstraintViolationException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,17 +32,11 @@ public class ObservacaoBean {
     @EJB
     DadoBiomedicoBean dadoBiomedicoBean;
 
-
-    public List<Observacao> getAll() {
-        return entityManager.createNamedQuery("getAllObservacoes", Observacao.class).getResultList();
-    }
-
-    public Observacao create(String doenteEmail, String profissionalDeSaudeEmail, String nomeDadoBiomedico, String data, int valorQuantitativo, String valorQualitativo
-    ) throws MyEntityNotFoundException, ParseException, MyValueNotFoundException, MyValueOutOfBoundsException {
-
+    public Observacao create(String doenteEmail, String profissionalDeSaudeEmail, String nomeDadoBiomedico, String data, int valorQuantitativo, String valorQualitativo) throws MyEntityNotFoundException, MyParseException, MyValueNotFoundException, MyValueOutOfBoundsException, MyConstraintViolationException {
         Doente doente = doenteBean.findOrFail(doenteEmail);
         ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.findOrFail(profissionalDeSaudeEmail);
         DadoBiomedico dadoBiomedico = dadoBiomedicoBean.findOrFail(nomeDadoBiomedico);
+        Observacao observacao;
 
         if(!dadoBiomedico.getQualificadores().contains(valorQualitativo)){
             throw new MyValueNotFoundException(valorQualitativo + " not found!");
@@ -53,25 +45,25 @@ public class ObservacaoBean {
             throw new MyValueOutOfBoundsException(valorQuantitativo + " must be lower than " + dadoBiomedico.getMaximo() + " and higher than "+ dadoBiomedico.getMinimo());
         }
 
-        Observacao observacao = new Observacao(doente, profissionalDeSaude, nomeDadoBiomedico, stringToGregorian(data), valorQuantitativo, valorQualitativo);
+        try {
+            observacao = new Observacao(doente, profissionalDeSaude, nomeDadoBiomedico, stringToGregorian(data), valorQuantitativo, valorQualitativo);
+            entityManager.persist(observacao);
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
+        }catch(ParseException e){
+            throw new MyParseException("Error parsing either Start or End Date.");
+        }
 
-        entityManager.persist(observacao);
         doente.adicionarObservacao(observacao);
         profissionalDeSaude.adicionarObservacao(observacao);
-
 
         return observacao;
     }
 
-    public void delete(int id) throws Exception {
-        Observacao observacao = this.findOrFail(id);
-        observacao.getDoente().removerObservacao(observacao);
-        observacao.getProfissionalDeSaude().removerObservacao(observacao);
-        entityManager.remove(observacao);
-    }
-
-    public Observacao updateObservacao(Observacao observacao, ObservacaoDTO observacaoDTO) throws ParseException, MyEntityNotFoundException, MyValueOutOfBoundsException, MyValueNotFoundException {
+    public Observacao updateObservacao(int id, ObservacaoDTO observacaoDTO) throws MyEntityNotFoundException, MyValueOutOfBoundsException, MyValueNotFoundException, MyParseException, MyConstraintViolationException {
+        Observacao observacao = findOrFail(id);
         DadoBiomedico dado = dadoBiomedicoBean.findOrFail(observacaoDTO.getNomeDadoBiomedico());
+
         if(!dado.getQualificadores().contains(observacaoDTO.getValorQualitativo())){
             throw new MyValueNotFoundException(observacaoDTO.getValorQualitativo() + " not found!");
         }
@@ -82,17 +74,33 @@ public class ObservacaoBean {
         Doente doente = doenteBean.findOrFail(observacaoDTO.getDoenteEmail());
         ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.findOrFail(observacaoDTO.getProfissionalDeSaudeEmail());
 
-        observacao.setDoente(doente);
-        observacao.setProfissionalDeSaude(profissionalDeSaude);
-        observacao.setNomeDadoBiomedico(dado.getNome());
-        observacao.setData(stringToGregorian(observacaoDTO.getData()));
-        observacao.setValorQuantitativo(observacaoDTO.getValorQuantitativo());
-        observacao.setValorQualitativo(observacaoDTO.getValorQualitativo());
+        try {
+            observacao.setDoente(doente);
+            observacao.setProfissionalDeSaude(profissionalDeSaude);
+            observacao.setNomeDadoBiomedico(dado.getNome());
+            observacao.setData(stringToGregorian(observacaoDTO.getData()));
+            observacao.setValorQuantitativo(observacaoDTO.getValorQuantitativo());
+            observacao.setValorQualitativo(observacaoDTO.getValorQualitativo());
+            entityManager.merge(observacao);
+        }catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
+        }catch (ParseException e){
+            throw new MyParseException("Error parsing either Start or End Date.");
+        }
 
-        entityManager.merge(observacao);
         return observacao;
     }
 
+    public void delete(int id) throws MyEntityNotFoundException {
+        Observacao observacao = findOrFail(id);
+        observacao.getDoente().removerObservacao(observacao);
+        observacao.getProfissionalDeSaude().removerObservacao(observacao);
+        entityManager.remove(observacao);
+    }
+
+    public List<Observacao> getAll() {
+        return entityManager.createNamedQuery("getAllObservacoes", Observacao.class).getResultList();
+    }
 
     public Observacao findOrFail(int id) throws MyEntityNotFoundException {
         Observacao observacao = find(id);

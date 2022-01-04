@@ -4,8 +4,11 @@
 
 <script>
 import UpdateProfissionalAdministrador from "../../../components/UpdateProfissionalAdministrador";
+import administradoresPut from "../../../middleware/administradoresPut";
+
 export default {
     components: {UpdateProfissionalAdministrador},
+    middleware: administradoresPut,
     data() {
         return {
             user: null,

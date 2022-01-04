@@ -1,8 +1,11 @@
 <template>
-    <div>
     <b-container>
-        <h1>Lista de Dados Biomedicos:</h1>
-        <template v-if="dados.length > 0">
+        <h1>List of Dados Biomedicos:</h1>
+
+        <template v-if="dados.length == 0 && dadosLoading == false">
+            <p class="text-danger">No observações to show.</p>
+        </template>
+        <template v-else>
             <b-row :no-gutters="true">
                 <b-table
                     hover
@@ -16,54 +19,49 @@
                     @row-selected="onRowSelected"
                     :items="dados"
                     :fields="fields"
-
+                    :busy="dadosLoading"
                 >
                     <template #table-busy>
-                        <spinner />
+                        <Spinner />
                     </template>
                 </b-table>
             </b-row>
-        </template>
-        <template v-else>
-            <p class="text-danger">Não há dados para listar</p>
-        </template>
-        <b-row :no-gutters="true">
-            <b-col class="text-left">
-                <b-button variant="success" @click="pushRoute(`/dadosbiomedicos/create/`)">Criar Dado Biomedico</b-button>
-            </b-col>
-        </b-row>
-        <template v-if="dados.length > 0">
-            <b-col class="text-right">
 
-                <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteDado()">Apagar</b-button>
-                <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}`)">Detalhes</b-button>
-                <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}/update`)">Atualizar</b-button>
-            </b-col>
+            <b-row :no-gutters="true">
+                <b-col class="text-left">
+                    <b-button variant="success" v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'Administrador'" @click="pushRoute(`/dadosbiomedicos/create/`)">Create</b-button>
+                </b-col>
+                <b-col class="text-right">
+                    <b-button variant="primary" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}`)">Details</b-button>
+                    <template v-if="this.$store.state.auth.loggedIn == true && this.$auth.user.groups[0] == 'Administrador'">
+                        <b-button variant="warning" :disabled="selectedRow.length == 0" @click="pushRoute(`/dadosBiomedicos/${selectedRow[0].nome}/update`)">Update</b-button>
+                        <b-button variant="danger" :disabled="selectedRow.length == 0" @click="deleteDadoBiomedico(selectedRow[0])">Delete</b-button>
+                    </template>
+                </b-col>
+            </b-row>
         </template>
-
     </b-container>
-    </div>
-
 </template>
 
-
-
 <script>
-import dadosBiomedicosRoutes from "../../middleware/dadosBiomedicosRoutes";
+import dadosBiomedicosIndex from "../../middleware/dadosBiomedicosIndex";
+import Spinner from "../../components/Spinner";
 
 export default {
-    middleware:dadosBiomedicosRoutes,
+    middleware: dadosBiomedicosIndex,
+    components: {Spinner},
     data() {
         return {
             dados: [],
             fields: ["nome", "descricao", "maximo", "minimo", "unidadeMedida", "qualificadores"],
             selectedRow:[],
+            dadosLoading: true,
         }
     },
     created() {
-
         this.$axios.$get('/api/dadosbiomedicos').then(dados => {
             this.dados = dados
+            this.dadosLoading = false
         })
     },
     methods: {
@@ -73,14 +71,23 @@ export default {
         pushRoute(route) {
             this.$router.push(route)
         },
+        deleteDadoBiomedico(row) {
+            this.$axios.$delete(`/api/dadosbiomedicos/${row.nome}`).then(response => {
 
-        deleteDado() {
-            this.$axios.$delete(`/api/dadosbiomedicos/${this.selectedRow[0].nome}`).then(response => {
-                this.$router.go()
-            }).catch(error => console.log(error))
+                this.$toast.success("Successfully deleted dado biomedico (" + row.id + ").")
+
+                //reload dados biomedicos list
+                this.$axios.$get('/api/dadosbiomedicos').then(dados => {
+                    this.dadosLoading = true
+                    this.dados = []
+                    this.dados.push(...dados)
+                    this.dadosLoading = false
+                }).catch( error => this.$toast.error("Error loading list of dados biomedicos."))
+
+            }).catch(error => {
+                this.$toast.error("Could not delete dado biomedico (" + row.id + ").<\/br>Error: '" + error.response.data + "'")
+            })
         }
-
-
     }
 }
 </script>

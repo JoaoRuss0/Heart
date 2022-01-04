@@ -4,14 +4,15 @@ import pt.ipleiria.estg.dei.ei.dae.project.entities.Doente;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Observacao;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.Prescricao;
 import pt.ipleiria.estg.dei.ei.dae.project.entities.ProfissionalDeSaude;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyEntityNotFoundException;
-import pt.ipleiria.estg.dei.ei.dae.project.ws.UserService;
+import pt.ipleiria.estg.dei.ei.dae.project.exceptions.MyParseException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.NotFoundException;
+import javax.validation.ConstraintViolationException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,35 +36,59 @@ public class PrescricaoBean {
     @EJB
     ObservacaoBean observacaoBean;
 
-    public Prescricao create(String causa, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao, String profissionalDeSaudeEmail, int observacaoID) throws Exception {
-
-
-
+    public Prescricao create(String comentario, String doenteEmail, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao, String profissionalDeSaudeEmail, int observacaoID) throws MyConstraintViolationException, MyEntityNotFoundException, MyParseException {
         Doente doente = doenteBean.findOrFail(doenteEmail);
         ProfissionalDeSaude profissionalDeSaude = profissionalDeSaudeBean.findOrFail(profissionalDeSaudeEmail);
         Observacao observacao =observacaoBean.findOrFail(observacaoID);
+        Prescricao prescricao;
 
+        try {
+            prescricao = new Prescricao(comentario, stringToGregorian(dataInicio), stringToGregorian(dataFinal), tipoPrescricao, doente, profissionalDeSaude, observacao);
+            entityManager.persist(prescricao);
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
+        }catch(ParseException e){
+            throw new MyParseException("Error parsing either Start or End Date.");
+        }
 
-        Prescricao prescricao = new Prescricao(causa, stringToGregorian(dataInicio), stringToGregorian(dataFinal), tipoPrescricao, doente, profissionalDeSaude, observacao);
-
-
-        System.out.println(profissionalDeSaude);
-        System.out.println(doente);
-
-        entityManager.persist(prescricao);
         doente.adicionarPrescricao(prescricao);
         profissionalDeSaude.adicionarPrescricao(prescricao);
         //observacao.setPrescricao(prescricao);
 
+        return prescricao;
+    }
+
+    public Prescricao updatePrescricao(int id, String comentario, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) throws MyParseException, MyEntityNotFoundException, MyConstraintViolationException {
+        Prescricao prescricao = findOrFail(id);
+
+        try {
+            prescricao.setCausa(comentario);
+            prescricao.setTipoPrescricao(tipoPrescricao);
+            prescricao.setDataInicio(stringToGregorian(dataInicio));
+            prescricao.setDataFinal(stringToGregorian(dataFinal));
+            entityManager.merge(prescricao);
+        }catch(ConstraintViolationException e){
+            throw new MyConstraintViolationException(e);
+        }catch(ParseException e) {
+            throw new MyParseException("Error parsing either Start or End Date.");
+        }
 
         return prescricao;
+    }
+
+    public void deletePrescricao(int id) throws MyEntityNotFoundException {
+        Prescricao prescricao = findOrFail(id);
+        prescricao.getDoente().removerPrescricao(prescricao);
+        prescricao.getProfissionalDeSaude().removerPrescricao(prescricao);
+
+        entityManager.remove(prescricao);
     }
 
     public List<Prescricao> getAll() {
         return entityManager.createNamedQuery("getAllPrescricoes", Prescricao.class).getResultList();
     }
 
-    private Prescricao findOrFail(int id) throws MyEntityNotFoundException {
+    public Prescricao findOrFail(int id) throws MyEntityNotFoundException {
         Prescricao prescricao = find(id);
 
         if(prescricao == null){
@@ -77,26 +102,6 @@ public class PrescricaoBean {
         return entityManager.find(Prescricao.class, id);
     }
 
-
-    public Prescricao updatePrescricao(Prescricao prescricao, String causa, String dataInicio, String dataFinal, Prescricao.tipoPrescricao tipoPrescricao) throws ParseException {
-        prescricao.setCausa(causa);
-        prescricao.setTipoPrescricao(tipoPrescricao);
-        prescricao.setDataInicio(stringToGregorian(dataInicio));
-        prescricao.setDataFinal(stringToGregorian(dataFinal));
-        entityManager.merge(prescricao);
-        return prescricao;
-    }
-
-
-    public void deletePrescricao(int id) throws Exception {
-        Prescricao prescricao = this.findOrFail(id);
-        prescricao.getDoente().removerPrescricao(prescricao);
-        prescricao.getProfissionalDeSaude().removerPrescricao(prescricao);
-        entityManager.remove(prescricao);
-
-
-    }
-
     private GregorianCalendar stringToGregorian(String data) throws ParseException {
         DateFormat df = new SimpleDateFormat("yyyy-mm-dd");
         Date date = df.parse(data);
@@ -104,5 +109,4 @@ public class PrescricaoBean {
         cal.setTime(date);
         return (GregorianCalendar) cal;
     }
-
 }

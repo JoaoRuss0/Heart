@@ -95,6 +95,8 @@ export default {
 
                 if (this.$auth.user.groups.includes('Administrador')) {
                     this.$router.push('/users')
+                } else {
+                    this.$router.push('/observacoes')
                 }
             }).catch(() => {
                 this.$toast.error('Sorry, you cant login. Ensure your credentials are correct').goAway(3000)

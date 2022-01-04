@@ -4,6 +4,8 @@
 
 <script>
 import IndexEntities from "../../../components/IndexEntities";
+
+
 export default {
     components: {IndexEntities},
     data() {

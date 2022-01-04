@@ -16,7 +16,7 @@ import java.util.List;
 })
 public class Prescricao {
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue (strategy = GenerationType.SEQUENCE, generator="PRESCRICAO_SEQ")
     private int id;
 
     @NotNull

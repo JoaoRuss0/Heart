@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
 public class Observacao {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue (strategy = GenerationType.SEQUENCE, generator="OBSERVACAO_SEQ")
     private int id;
 
     @NotNull

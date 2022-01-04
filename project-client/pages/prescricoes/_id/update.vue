@@ -44,7 +44,10 @@
 </template>
 
 <script>
+import observacoesPrescricoesPostPutDelete from '../../../middleware/observacoesPrescricoesPostPutDelete'
+
 export default {
+    middleware: observacoesPrescricoesPostPutDelete,
     data () {
         return {
             prescricao:
@@ -58,10 +61,8 @@ export default {
         }
     },
     created () {
-        console.log(this.$route.params.id)
         this.$axios.$get('api/prescricoes/' + this.$route.params.id).then((prescricao) => {
             this.prescricao = prescricao
-            console.log(prescricao)
         })
     },
     methods: {

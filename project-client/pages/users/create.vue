@@ -4,8 +4,12 @@
             Create new user
         </h1>
         <b-form @submit.prevent="onSubmit" @reset.prevent="onReset" :disabled="!isFormValid">
-            <b-form-group label="User Type:">
-                <b-form-radio-group v-model="user.tipo" :options="options" />
+            <b-form-group
+                id="fieldset-user-type"
+                label="User Type:"
+                label-for="inputUserType"
+                >
+                <b-form-radio-group id="inputUserType" v-model="user.tipo" :options="options" />
             </b-form-group>
             <b-form-group
                 id="fieldset-name"
@@ -40,7 +44,6 @@
                     :state="stateEmail"
                     required
                 ></b-form-input>
-
             </b-form-group>
             <b-form-group
                 id="fieldset-password"
